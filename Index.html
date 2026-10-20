@@ -1,0 +1,2730 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#070a1a">
+    <title>Why Dev Digital - Premium Member Dashboard</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      /* Custom Modern & Thin Scrollbar */
+      html {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(56, 189, 248, 0.4) rgba(15, 23, 42, 0.6);
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.6);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, rgba(56, 189, 248, 0.5), rgba(2, 132, 199, 0.7));
+        border-radius: 10px;
+        box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+        box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+      }
+
+      /* Dynamic Slideshow Background */
+      .bg-slideshow {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -2;
+        overflow: hidden;
+      }
+      .bg-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        opacity: 0;
+        transition: opacity 1.2s ease-in-out;
+      }
+      .bg-img.active {
+        opacity: 1;
+      }
+
+      /* Lapisan transparan gelap kontras */
+      .video-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.35); 
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        z-index: -1;
+      }
+
+      :root {
+        --bg-dark: #0f172a;
+        --card-bg: rgba(30, 41, 59, 0.85);
+        --card-border: rgba(255, 255, 255, 0.15);
+        --accent-blue: #38bdf8;
+        --accent-purple: #c084fc;
+        --text-white: #ffffff;
+        --text-muted: #cbd5e1;
+        --success: #10b981;
+        --danger: #ef4444;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+      body { background-color: var(--bg-dark); color: var(--text-white); min-height: 100vh; overflow-x: hidden; position: relative; }
+
+      /* Transparent Login Layer to show background 3-image rotator */
+      #loginLayer {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background: transparent;
+      }
+
+      .login-backdrop-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+      }
+
+      .login-card {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 420px;
+        background: rgba(15, 23, 42, 0.88);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(56, 189, 248, 0.45);
+        border-radius: 28px;
+        padding: 32px 26px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.25);
+        text-align: center;
+        animation: loginCardFadeIn 0.5s ease-out;
+      }
+
+      @keyframes loginCardFadeIn {
+        from { opacity: 0; transform: translateY(20px) scale(0.96); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .login-brand-logo {
+        width: 58px;
+        height: 58px;
+        object-fit: contain;
+        border-radius: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
+      }
+
+      .login-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 4px;
+      }
+
+      .login-subtitle {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 24px;
+      }
+
+      .login-form-group {
+        text-align: left;
+        margin-bottom: 16px;
+      }
+
+      .login-form-group label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin-bottom: 6px;
+        letter-spacing: 0.3px;
+      }
+
+      .login-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .login-input-wrapper i {
+        position: absolute;
+        left: 14px;
+        color: #94a3b8;
+        font-size: 14px;
+        transition: color 0.3s ease;
+      }
+
+      .login-input {
+        width: 100%;
+        padding: 12px 14px 12px 42px;
+        background: rgba(30, 41, 59, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 14px;
+        color: #fff;
+        font-size: 12.5px;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .login-input:focus {
+        border-color: var(--accent-blue);
+        background: rgba(30, 41, 59, 0.95);
+        box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+      }
+
+      .login-input:focus + i {
+        color: var(--accent-blue);
+      }
+
+      .btn-submit-login {
+        width: 100%;
+        height: 44px;
+        margin-top: 10px;
+        background: linear-gradient(135deg, #0284c7, #38bdf8);
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 800;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .btn-submit-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6);
+        filter: brightness(1.1);
+      }
+
+      .btn-submit-login:disabled {
+        opacity: 0.75;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .login-info-box {
+        margin-top: 20px;
+        padding: 12px;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 14px;
+        font-size: 10.5px;
+        color: #cbd5e1;
+        line-height: 1.4;
+      }
+
+      .login-info-box strong {
+        color: #38bdf8;
+      }
+      
+      /* Background Radial Glow Layer */
+      .bg-fixed { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.22), transparent 45%),
+                    radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.2), transparent 45%); 
+        z-index: -1; 
+      }
+      .hidden { display: none !important; }
+
+      /* Loader */
+      #globalLoader { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; }
+      .spinner { width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.15); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* Dashboard Layer */
+      #dashboardLayer { display: block; padding-bottom: 30px; }
+      .app-container { max-width: 1100px; margin: 0 auto; padding: 18px; }
+
+      /* Header Style Solid Pekat Tegas dengan Lengkungan Samarat */
+      .hero-banner-header { 
+        position: sticky;
+        top: 10px;
+        z-index: 900;
+        background: #1e293b; 
+        border-radius: 18px; 
+        padding: 14px 18px;
+        border: 1px solid rgba(56, 189, 248, 0.35); 
+        margin-top: 6px;
+        margin-bottom: 24px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(56, 189, 248, 0.15);
+        overflow: hidden;
+        min-height: 64px;
+      }
+      
+      /* Animasi Kilatan Cahaya Berjalan */
+      .hero-banner-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.08),
+          rgba(56, 189, 248, 0.35),
+          rgba(255, 255, 255, 0.08),
+          transparent
+        );
+        transform: skewX(-25deg);
+        animation: headerShine 4s infinite linear;
+        pointer-events: none;
+      }
+
+      @keyframes headerShine {
+        0% { left: -150%; }
+        35% { left: 150%; }
+        100% { left: 150%; }
+      }
+      
+      .hero-left-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        z-index: 2;
+        min-width: 0;
+      }
+
+      .header-logo {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        flex-shrink: 0;
+      }
+
+      .hero-title-text { 
+        font-size: 18px; 
+        font-weight: 800; 
+        color: #fff; 
+        letter-spacing: -0.3px; 
+        white-space: nowrap; 
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        margin: 0;
+      }
+      
+      .hero-top-right { 
+        display: flex; 
+        gap: 8px; 
+        align-items: center; 
+        position: relative; 
+        z-index: 2; 
+        flex-shrink: 0;
+      }
+      .btn-buat { 
+        background: linear-gradient(135deg, #10b981, #059669); 
+        color: #fff; 
+        text-decoration: none; 
+        padding: 0 14px; 
+        height: 34px;
+        border-radius: 18px; 
+        font-size: 11px; 
+        font-weight: 800; 
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); 
+        transition: all 0.3s ease; 
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        border: none;
+      }
+      .btn-buat:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.6); filter: brightness(1.1); }
+      
+      .btn-menu { 
+        background: rgba(255,255,255,0.12); 
+        border: 1px solid rgba(255,255,255,0.2); 
+        color: #fff; 
+        width: 34px;
+        height: 34px; 
+        border-radius: 10px; 
+        cursor: pointer; 
+        font-size: 15px; 
+        transition: 0.2s; 
+        flex-shrink: 0; 
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        line-height: 1;
+      }
+      .btn-menu:hover { background: rgba(255,255,255,0.22); border-color: rgba(56, 189, 248, 0.6); }
+
+      /* Optimization for Mobile Header */
+      @media(max-width: 480px) {
+        .hero-banner-header { padding: 10px 14px; top: 6px; min-height: 54px; }
+        .hero-title-text { font-size: 14px; line-height: 1; }
+        .header-logo { width: 28px; height: 28px; border-radius: 8px; }
+        .hero-left-wrapper { gap: 8px; }
+        .hero-top-right { gap: 6px; }
+        .btn-buat { height: 30px; padding: 0 10px; font-size: 9.5px; border-radius: 15px; }
+        .btn-menu { width: 30px; height: 30px; font-size: 13px; border-radius: 8px; }
+      }
+
+      .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+      @media(max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+      
+      .stat-card { 
+        background: #1e293b; 
+        border: 1px solid rgba(255, 255, 255, 0.18); 
+        border-radius: 20px; 
+        padding: 18px 16px; 
+        color: #fff; 
+        transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: space-between; 
+        cursor: default;
+        user-select: none;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      }
+      .stat-card:hover { 
+        transform: translateY(-4px); 
+        border-color: rgba(56, 189, 248, 0.6); 
+        background: #334155;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(56, 189, 248, 0.2);
+      }
+      .stat-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); font-weight: 600; }
+      .stat-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); display: flex; justify-content: center; align-items: center; font-size: 14px; transition: 0.3s ease; }
+      .stat-card:hover .stat-icon { background: var(--accent-blue); color: #000; }
+      .stat-value { font-size: 24px; font-weight: 800; color: #fff; margin-top: 10px; font-variant-numeric: tabular-nums; }
+
+      .banner-slider { overflow: hidden; border-radius: 24px; margin-bottom: 28px; border: 1px solid var(--card-border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+      .slider-wrapper { display: flex; transition: transform 0.5s ease-in-out; }
+      .slide { min-width: 100%; height: 180px; background-size: cover; background-position: center; position: relative; display: flex; align-items: flex-end; padding: 20px 24px; }
+      .slide-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15, 23, 42, 0.88) 15%, rgba(15, 23, 42, 0.25)); }
+      .slide-content { position: relative; z-index: 2; }
+      .slide-tag { background: #facc15; color: #000; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .slide-content h2 { font-size: 18px; margin-top: 6px; color: #fff; font-weight: 800; }
+      .slide-content p { font-size: 12px; color: #e2e8f0; line-height: 1.4; margin-top: 2px; }
+
+      .menu-section-title { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 14px; letter-spacing: -0.2px; }
+
+      .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 30px; }
+      @media(max-width: 900px) { .menu-grid { grid-template-columns: repeat(3, 1fr); } }
+      @media(max-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
+
+      .menu-card { background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 22px; padding: 20px 14px; text-align: center; text-decoration: none; color: #fff; transition: 0.3s; display: flex; flex-direction: column; align-items: center; box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+      .menu-card:hover { transform: translateY(-4px); border-color: rgba(56, 189, 248, 0.6); background: #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.35); }
+      .menu-icon-wrapper { width: 48px; height: 48px; border-radius: 14px; background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 12px; border: 1px solid rgba(56, 189, 248, 0.3); }
+      .menu-card h3 { font-size: 13px; font-weight: 800; margin-bottom: 3px; color: #fff; }
+      .menu-card p { font-size: 10px; color: var(--text-muted); }
+
+      .search-explore-wrapper { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 18px; margin-bottom: 25px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+      .search-input-box { position: relative; margin-bottom: 14px; }
+      .search-input-box i { position: absolute; left: 16px; top: 13px; color: #94a3b8; font-size: 14px; }
+      .search-input-box input { width: 100%; padding: 11px 16px 11px 44px; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.12); border-radius: 30px; color: #fff; font-size: 12px; outline: none; transition: 0.3s; }
+      .search-input-box input:focus { border-color: var(--accent-blue); background: rgba(15, 23, 42, 0.95); box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+      
+      .category-filters { 
+        display: flex; 
+        gap: 8px; 
+        overflow-x: auto; 
+        padding: 6px 4px 8px 4px; 
+        margin-top: -2px;
+      }
+      .category-filters::-webkit-scrollbar { display: none; }
+      
+      .cat-filter-btn { 
+        background: rgba(15, 23, 42, 0.75); 
+        border: 1px solid rgba(255,255,255,0.12); 
+        color: var(--text-muted); 
+        padding: 7px 18px; 
+        border-radius: 30px; 
+        font-size: 11px; 
+        white-space: nowrap; 
+        cursor: pointer; 
+        font-weight: 700; 
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        user-select: none;
+      }
+      .cat-filter-btn:hover {
+        background: rgba(56, 189, 248, 0.25);
+        color: #38bdf8;
+        border-color: rgba(56, 189, 248, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+      }
+      .cat-filter-btn:active {
+        transform: scale(0.96);
+      }
+      .cat-filter-btn.active { 
+        background: linear-gradient(135deg, #0284c7, #0ea5e9); 
+        color: #fff; 
+        font-weight: 800; 
+        border-color: #38bdf8; 
+        box-shadow: 0 4px 14px rgba(14, 165, 233, 0.45); 
+        transform: translateY(0);
+      }
+
+      .katalog-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 25px; }
+      @media(max-width: 1024px) { .katalog-grid { grid-template-columns: repeat(4, 1fr); } }
+      @media(max-width: 768px) { .katalog-grid { grid-template-columns: repeat(3, 1fr); } }
+      
+      /* Khusus HP: 3 Produk Sebaris dengan Layout Ringkas */
+      @media(max-width: 480px) { 
+        .katalog-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; } 
+        .katalog-card { padding: 12px 5px; border-radius: 16px; }
+        .katalog-icon { width: 36px; height: 36px; border-radius: 12px; font-size: 15px; margin-bottom: 8px; }
+        .katalog-title { font-size: 9px; min-height: 24px; margin-bottom: 8px; letter-spacing: 0.2px; line-height: 1.25; }
+        .katalog-btn { font-size: 8px; padding: 5px 8px; border-radius: 12px; letter-spacing: 0px; }
+      }
+
+      .katalog-card { 
+        background: rgba(30, 41, 59, 0.5); 
+        backdrop-filter: blur(8px); 
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.18); 
+        border-radius: 22px; 
+        padding: 18px 10px; 
+        color: #fff; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
+        transition: all 0.3s ease; 
+        user-select: none;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      }
+      .katalog-card:hover { 
+        transform: translateY(-4px); 
+        border-color: rgba(56, 189, 248, 0.7); 
+        background: rgba(51, 65, 85, 0.75); 
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(56, 189, 248, 0.25);
+      }
+      
+      .katalog-icon { 
+        width: 48px; height: 48px; border-radius: 16px; color: #ffffff; 
+        display: flex; justify-content: center; align-items: center; 
+        font-size: 20px; margin-bottom: 12px; flex-shrink: 0;
+      }
+
+      .katalog-card:nth-child(8n+1) .katalog-icon { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4); }
+      .katalog-card:nth-child(8n+2) .katalog-icon { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4); }
+      .katalog-card:nth-child(8n+3) .katalog-icon { background: linear-gradient(135deg, #06b6d4, #0284c7); box-shadow: 0 6px 16px rgba(6, 182, 212, 0.4); }
+      .katalog-card:nth-child(8n+4) .katalog-icon { background: linear-gradient(135deg, #a855f7, #7e22ce); box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4); }
+      .katalog-card:nth-child(8n+5) .katalog-icon { background: linear-gradient(135deg, #84cc16, #4d7c0f); box-shadow: 0 6px 16px rgba(132, 204, 22, 0.4); }
+      .katalog-card:nth-child(8n+6) .katalog-icon { background: linear-gradient(135deg, #ec4899, #be185d); box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4); }
+      .katalog-card:nth-child(8n+7) .katalog-icon { background: linear-gradient(135deg, #f97316, #c2410c); box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4); }
+      .katalog-card:nth-child(8n+0) .katalog-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4); }
+
+      .katalog-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; line-height: 1.3; color: #fff; min-height: 28px; display: flex; align-items: center; justify-content: center; }
+      
+      .katalog-btn { 
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(2, 132, 199, 0.6)); 
+        border: 1px solid rgba(56, 189, 248, 0.8); 
+        color: #ffffff; 
+        font-size: 9px; 
+        font-weight: 800; 
+        padding: 6px 14px; 
+        border-radius: 20px; 
+        letter-spacing: 0.5px; 
+        margin-top: auto; 
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+        box-shadow: 0 2px 12px rgba(56, 189, 248, 0.25);
+      }
+      .katalog-btn:hover {
+        background: linear-gradient(135deg, #0284c7, #38bdf8);
+        color: #ffffff;
+        border-color: #38bdf8;
+        transform: translateY(-2px) scale(1.08);
+        box-shadow: 0 6px 18px rgba(56, 189, 248, 0.5);
+      }
+      .katalog-btn:active {
+        transform: scale(0.95);
+      }
+
+      .cat-divider { text-align: center; margin: 30px 0 18px 0; position: relative; }
+      .cat-divider::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.15); z-index: 1; }
+      .cat-badge { position: relative; z-index: 2; display: inline-block; background: #1e293b; padding: 6px 20px; border-radius: 30px; border: 1px solid #38bdf8; color: #38bdf8; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3); }
+
+      .zip-warning-box { background: rgba(250, 204, 21, 0.12); border: 1px solid rgba(250, 204, 21, 0.4); border-radius: 20px; padding: 18px; text-align: center; margin-bottom: 20px; }
+      .zip-warning-box h4 { color: #facc15; font-size: 13px; font-weight: 800; margin-top: 5px; }
+      .zip-warning-box p { font-size: 11px; color: var(--text-muted); margin: 6px 0 12px 0; }
+      
+      .btn-tutorial-zip { 
+        display: inline-block; 
+        background: linear-gradient(135deg, #facc15, #eab308); 
+        color: #000; 
+        font-size: 11px; 
+        font-weight: 800; 
+        text-decoration: none; 
+        padding: 8px 20px; 
+        border-radius: 20px; 
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+      }
+      .btn-tutorial-zip:hover {
+        transform: translateY(-3px) scale(1.05);
+        background: linear-gradient(135deg, #fde047, #facc15);
+        box-shadow: 0 8px 22px rgba(250, 204, 21, 0.55);
+        color: #000;
+      }
+
+      /* Sidebar & Compact Nav Link Styling */
+      .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); z-index: 9998; display: none; }
+      .sidebar-menu { 
+        position: fixed; top: 0; right: -310px; width: 300px; height: 100%; 
+        background: #1e293b; border-left: 1px solid rgba(56, 189, 248, 0.35); 
+        z-index: 9999; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        padding: 22px 18px; display: flex; flex-direction: column; 
+        box-shadow: -10px 0 35px rgba(0, 0, 0, 0.7);
+      }
+      .sidebar-menu.active { right: 0; }
+      .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+      .sidebar-brand { font-weight: 800; font-size: 16px; color: #fff; display: flex; align-items: center; gap: 8px; }
+      .close-sidebar { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; width: 32px; height: 32px; border-radius: 10px; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+      .close-sidebar:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; border-color: rgba(239, 68, 68, 0.4); }
+      .menu-group { margin-bottom: 14px; }
+      .menu-label { font-size: 9.5px; color: #94a3b8; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.8px; }
+      
+      /* REVISI POIN 1: Navigasi Tanpa Bingkai Awal, Rapat, Merekat & Menyala Pas Hover/Aktif */
+      .sidebar-link { 
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        color: #cbd5e1; 
+        text-decoration: none; 
+        font-size: 12px; 
+        padding: 8px 12px; 
+        font-weight: 700; 
+        border-radius: 12px;
+        background: transparent;
+        border: 1px solid transparent;
+        margin-bottom: 3px;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+      }
+      .sidebar-link i {
+        width: 20px;
+        text-align: center;
+        font-size: 14px;
+        color: #38bdf8;
+        flex-shrink: 0;
+        transition: transform 0.25s ease;
+      }
+      /* Hover State: Tampil Bingkai Halus */
+      .sidebar-link:hover { 
+        color: #38bdf8; 
+        background: rgba(56, 189, 248, 0.15);
+        border-color: rgba(56, 189, 248, 0.4);
+        transform: translateX(4px);
+      }
+      .sidebar-link:hover i {
+        transform: scale(1.15);
+      }
+      /* Active State: Menyala Terus */
+      .sidebar-link.active { 
+        color: #ffffff; 
+        background: linear-gradient(135deg, rgba(2, 132, 199, 0.55), rgba(56, 189, 248, 0.3));
+        border-color: #38bdf8;
+        box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+        font-weight: 800;
+      }
+
+      .premium-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px); z-index: 999999; display: flex; justify-content: center; align-items: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+      .premium-overlay.show { opacity: 1; pointer-events: auto; }
+      .premium-modal-box { background: rgba(30, 41, 59, 0.96); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 24px; padding: 25px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 25px rgba(168, 85, 247, 0.2); color: #ffffff; transform: translateY(30px); transition: transform 0.3s ease; }
+      .premium-overlay.show .premium-modal-box { transform: translateY(0); }
+      
+      #materiModal .premium-modal-box {
+        max-width: 720px;
+        width: 92%;
+        max-height: 88vh;
+        padding: 20px;
+      }
+
+      .close-btn { position: absolute; top: 16px; right: 16px; font-size: 18px; color: #cbd5e1; cursor: pointer; background: rgba(255,255,255,0.1); width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+      .modal-title { font-size: 16px; font-weight: 800; color: #facc15; text-align: center; margin-bottom: 10px; }
+      .modal-greeting { font-size: 12px; text-align: center; font-style: italic; color: #cbd5e1; margin-bottom: 15px; }
+      .modal-text { font-size: 12px; color: #e2e8f0; line-height: 1.5; margin-bottom: 15px; text-align: center; }
+
+      .accent-container { padding: 15px; border-radius: 14px; margin-bottom: 12px; font-size: 11px; line-height: 1.5; }
+      .green-accent { background: rgba(163, 230, 53, 0.12); border-left: 4px solid #a3e635; }
+      .purple-accent { background: rgba(168, 85, 247, 0.12); border-left: 4px solid #a855f7; }
+      .accent-title { font-size: 13px; font-weight: 800; margin-bottom: 6px; color: #fff; }
+
+      .highlight-box { background: linear-gradient(135deg, rgba(250, 204, 21, 0.2), rgba(250, 204, 21, 0.08)); border: 1px solid rgba(250, 204, 21, 0.5); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 15px; }
+      .highlight-box h4 { color: #facc15; font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+      .highlight-box p { font-size: 11px; color: #fff; margin: 0; }
+
+      .btn-tutup { width: 100%; padding: 12px; border-radius: 14px; background: linear-gradient(135deg, #7c3aed, #2563eb); color: #fff; font-weight: 800; border: none; cursor: pointer; margin-top: 14px; font-size: 12px; }
+
+      /* FAQ Accordion */
+      .faq-accordion-container { display: flex; flex-direction: column; gap: 8px; }
+      .faq-item { background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; overflow: hidden; }
+      .faq-question { padding: 12px 14px; color: #e0f2fe; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+      .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+      .faq-answer-content { padding: 0 14px 12px 14px; color: #cbd5e1; font-size: 11px; line-height: 1.5; }
+      .faq-item.active { background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.5); }
+      .faq-item.active .faq-answer { max-height: 500px; }
+
+      /* Playlist Materi */
+      .materi-list-container { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto; padding-right: 4px; }
+      .materi-step-btn { display: flex; align-items: center; background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 12px; padding: 9px 12px; cursor: pointer; text-align: left; width: 100%; color: #fff; transition: 0.2s; }
+      .materi-step-btn:hover { background: rgba(168, 85, 247, 0.22); border-color: rgba(168, 85, 247, 0.5); }
+      .materi-step-btn.active { background: rgba(168, 85, 247, 0.35); border-color: #a855f7; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3); }
+      .materi-step-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; margin-right: 10px; color: #c084fc; font-size: 11px; flex-shrink: 0; }
+      .materi-step-text span { font-size: 9px; color: #c084fc; font-weight: 800; text-transform: uppercase; }
+      .materi-step-text strong { font-size: 11px; color: #e2e8f0; display: block; }
+
+      /* REVISI POIN 3: Animasi Tombol Logout saat Kursor Diarahkan */
+      .btn-logout-cancel {
+        flex: 1; 
+        padding: 11px; 
+        border-radius: 12px; 
+        background: rgba(255,255,255,0.12); 
+        color: #fff; 
+        border: 1px solid rgba(255,255,255,0.2); 
+        font-weight: 700; 
+        cursor: pointer; 
+        font-size: 12px;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .btn-logout-cancel:hover {
+        background: rgba(255, 255, 255, 0.22);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+      }
+
+      .btn-logout-confirm {
+        flex: 1; 
+        padding: 11px; 
+        border-radius: 12px; 
+        background: linear-gradient(135deg, #ef4444, #dc2626); 
+        color: #fff; 
+        border: none; 
+        font-weight: 800; 
+        cursor: pointer; 
+        font-size: 12px; 
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .btn-logout-confirm:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.65);
+        filter: brightness(1.15);
+      }
+    </style>
+  </head>
+  <body ontouchstart="">
+
+    <!-- Background Images Rotator -->
+    <div class="bg-slideshow">
+      <img id="bgImage1" class="bg-img active" src="https://lh3.googleusercontent.com/d/1R5vHXKuWO_oykmC0WMTodTBk12pA5svT" alt="Background Why Dev Digital 1" onerror="this.src='https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=1920&q=80'">
+      <img id="bgImage2" class="bg-img" src="" alt="Background Why Dev Digital 2">
+    </div>
+    <div class="video-overlay"></div>
+
+    <div class="bg-fixed"></div>
+    <div id="globalLoader" class="hidden">
+      <div class="spinner"></div>
+      <p style="font-size: 13px; color: #cbd5e1; font-weight: bold;" id="loaderText">Memproses...</p>
+    </div>
+
+    <!-- REVISI POIN 4: Logo Web Baru pada Login Screen -->
+    <div id="loginLayer">
+      <div class="login-backdrop-overlay"></div>
+      <div class="login-card">
+        <img src="https://lh3.googleusercontent.com/d/1wkygjdWos3yS1CNeplDtRhB82oOOWqoh" alt="Logo Why Dev Digital" class="login-brand-logo" onerror="this.style.display='none'">
+        <h2 class="login-title">Why Dev Digital</h2>
+        <p class="login-subtitle">Silakan login untuk mengakses Member Dashboard</p>
+
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+          <div class="login-form-group">
+            <label for="loginUser">Email atau Username</label>
+            <div class="login-input-wrapper">
+              <input type="text" id="loginUser" class="login-input" placeholder="Masukkan email / username..." required>
+              <i class="fa-solid fa-user"></i>
+            </div>
+          </div>
+
+          <div class="login-form-group">
+            <label for="loginPass">Password</label>
+            <div class="login-input-wrapper">
+              <input type="password" id="loginPass" class="login-input" placeholder="Masukkan password..." required>
+              <i class="fa-solid fa-lock"></i>
+            </div>
+          </div>
+
+          <div id="loginErrorMsg" style="display:none; color:#ef4444; font-size:11px; font-weight:700; margin-bottom:12px; text-align:left;">
+            <i class="fa-solid fa-triangle-exclamation"></i> Username atau Password salah!
+          </div>
+
+          <button type="submit" id="btnLoginSubmit" class="btn-submit-login">
+            <span id="loginBtnText">Masuk Ke Dashboard</span>
+            <i class="fa-solid fa-arrow-right-to-bracket" id="loginBtnIcon"></i>
+          </button>
+        </form>
+
+        <div class="login-info-box">
+          <i class="fa-solid fa-shield-halved"></i> Sesi login Anda tersimpan otomatis selama <strong>5 Hari</strong> tanpa perlu login ulang saat refresh.
+        </div>
+      </div>
+    </div>
+
+    <main id="dashboardLayer" style="display: none;">
+      <div class="app-container">
+        
+        <!-- Header dengan Logo Web Baru -->
+        <header class="hero-banner-header">
+          <div class="hero-left-wrapper">
+            <img src="https://lh3.googleusercontent.com/d/1wkygjdWos3yS1CNeplDtRhB82oOOWqoh" alt="Logo Why Dev Digital" class="header-logo" onerror="this.style.display='none'">
+            <h1 class="hero-title-text">Why Dev Digital</h1>
+          </div>
+          <div class="hero-top-right">
+            <a href="https://wa.me/6285853862142?text=Halo%20kak.%20saya%20mau%20membuat%20website%20produk%20digital%20untuk%20brand%20saya%20sendiri%20yang%20sama%20persis%20dengan%20website%20kakak%2C%20kira%20kira%20biayanya%20berapa%20ya%3F" class="btn-buat" target="_blank">Buat Website</a>
+            <button onclick="toggleSidebar()" class="btn-menu" aria-label="Menu Utama"><i class="fa-solid fa-bars"></i></button>
+          </div>
+        </header>
+
+        <!-- Interactive Stats Section -->
+        <section class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header"><span>📚 Produk Digital</span><div class="stat-icon"><i class="fa-solid fa-folder-open"></i></div></div>
+            <div class="stat-value" data-target="1000" data-suffix="+">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header"><span>🎓 Materi Belajar</span><div class="stat-icon"><i class="fa-solid fa-graduation-cap"></i></div></div>
+            <div class="stat-value" data-target="29" data-suffix="+">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header"><span>👥 Total Member</span><div class="stat-icon"><i class="fa-solid fa-users"></i></div></div>
+            <div class="stat-value" data-target="500" data-suffix="+">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header"><span>⭐ Rata Rating</span><div class="stat-icon"><i class="fa-solid fa-star"></i></div></div>
+            <div class="stat-value" data-target="4.9" data-type="float">0.0</div>
+          </div>
+        </section>
+
+        <section class="banner-slider">
+          <div class="slider-wrapper" id="sliderWrapper">
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=1200&q=80');">
+              <div class="slide-overlay"></div>
+              <div class="slide-content"><span class="slide-tag">BISMILLAH</span>
+                <h2>Pejuang Produk Digital</h2>
+                <p>Mulai langkah bisnismu hari ini. Niatkan lillah untuk menebar manfaat lewat produk digital bersama bimbingan mentor.</p>
+              </div>
+            </div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1200&q=80');">
+              <div class="slide-overlay"></div>
+              <div class="slide-content"><span class="slide-tag">IKHTIAR & TAWAKKAL</span>
+                <h2>Rezeki Beralamat, Takkan Tersesat</h2>
+                <p>Tugas kita memaksimalkan promosi dan copywriting. Hasil closing serahkan sepenuhnya pada Sang Pemilik Rezeki.</p>
+              </div>
+            </div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=80');">
+              <div class="slide-overlay"></div>
+              <div class="slide-content"><span class="slide-tag">ISTIQOMAH</span>
+                <h2>Sabar Adalah Kunci</h2>
+                <p>Perjalanan bisnis digital butuh proses. Terus upgrade ilmu, ikuti arahan mentor, dan iringi dengan ikhtiar langit.</p>
+              </div>
+            </div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80');">
+              <div class="slide-overlay"></div>
+              <div class="slide-content"><span class="slide-tag">KOMUNITAS</span>
+                <h2>Sukses Bersama, Berkah Bersama</h2>
+                <p>Tinggalkan cara berbisnis yang tidak syar'i. Mari bangun kerajaan bisnis digital yang halal, berkah, dan melimpah.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Menu Navigasi Utama -->
+        <h2 class="menu-section-title">Menu Navigasi Utama</h2>
+        <section class="menu-grid">
+          <a href="javascript:void(0)" onclick="openBacaDuluModal()" class="menu-card">
+            <div class="menu-icon-wrapper"><i class="fa-solid fa-user"></i></div><h3>Baca Dulu</h3><p>Penjelasan Bisnis</p>
+          </a>
+          <a href="javascript:void(0)" onclick="openMateriModal()" class="menu-card">
+            <div class="menu-icon-wrapper"><i class="fa-solid fa-book"></i></div><h3>Materi Belajar</h3><p>Modul e-learning lengkap</p>
+          </a>
+          <a href="https://wa.me/6285853862142?text=Halo%20kak%2C%20saya%20ingin%20bergabung%20komunitas%20Why%20Dev%20Digital." target="_blank" class="menu-card">
+            <div class="menu-icon-wrapper"><i class="fa-solid fa-comment-dots"></i></div><h3>Komunitas</h3><p>Grup diskusi mitra</p>
+          </a>
+          <a href="https://wa.me/6285853862142?text=Halo%20kak%2C%20saya%20mau%20konsultasi%20terkait%20produk%20digital." target="_blank" class="menu-card">
+            <div class="menu-icon-wrapper"><i class="fa-solid fa-headphones"></i></div><h3>Konsultasi</h3><p>Tanya mentor praktisi</p>
+          </a>
+          <a href="javascript:void(0)" onclick="openBantuanModal()" class="menu-card">
+            <div class="menu-icon-wrapper"><i class="fa-solid fa-circle-question"></i></div><h3>Bantuan</h3><p>Pusat FAQ & layanan</p>
+          </a>
+          <a href="javascript:void(0)" onclick="openTipsModal()" class="menu-card">
+            <div class="menu-icon-wrapper"><i class="fa-solid fa-mobile-screen"></i></div><h3>Tips Member</h3><p>Cara akses cepat</p>
+          </a>
+          <a href="https://sites.google.com/view/opick-digital-081331661370/landing-page" target="_blank" class="menu-card">
+            <div class="menu-icon-wrapper"><i class="fa-solid fa-gift"></i></div><h3>Bonus</h3><p>Bonus materi belajar</p>
+          </a>
+          <a href="javascript:void(0)" onclick="openSnkModal()" class="menu-card">
+            <div class="menu-icon-wrapper"><i class="fa-solid fa-file-contract"></i></div><h3>Syarat & Ketentuan</h3><p>Kebijakan bisnis</p>
+          </a>
+        </section>
+
+        <!-- Search & Filter Katalog Interaktif -->
+        <h2 class="menu-section-title">Eksplorasi Produk Digital</h2>
+        <div class="search-explore-wrapper">
+          <div class="search-input-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="searchKatalogInput" placeholder="Cari template, ebook, ecourse, atau produk lainnya..." onkeyup="searchKatalog()"></div>
+          <div class="category-filters">
+            <div class="cat-filter-btn active" data-filter="semua" onclick="filterKatalog(this, 'semua')">Semua</div>
+            <div class="cat-filter-btn" data-filter="template" onclick="filterKatalog(this, 'template')">Template</div>
+            <div class="cat-filter-btn" data-filter="ebook" onclick="filterKatalog(this, 'ebook')">Ebook</div>
+            <div class="cat-filter-btn" data-filter="ecourse" onclick="filterKatalog(this, 'ecourse')">Ecourse</div>
+            <div class="cat-filter-btn" data-filter="tools" onclick="filterKatalog(this, 'tools')">Tools</div>
+            <div class="cat-filter-btn" data-filter="game" onclick="filterKatalog(this, 'game')">Game</div>
+            <div class="cat-filter-btn" data-filter="worksheet" onclick="filterKatalog(this, 'worksheet')">Worksheet</div>
+            <div class="cat-filter-btn" data-filter="islami" onclick="filterKatalog(this, 'islami')">Islami</div>
+            <div class="cat-filter-btn" data-filter="campuran" onclick="filterKatalog(this, 'campuran')">Campuran</div>
+          </div>
+        </div>
+
+        <!-- SECTION 1: ISLAMI & UMUM -->
+        <div class="katalog-section">
+          <div class="katalog-grid">
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-fingerprint"></i></div><h3 class="katalog-title">TASBIH DIGITAL</h3>
+              <a href="https://sites.google.com/view/tasbih-mizyan/home" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-regular fa-clock"></i></div><h3 class="katalog-title">WAKTU SHOLAT</h3>
+              <a href="https://equran.id/shalat" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-compass"></i></div><h3 class="katalog-title">ARAH KIBLAT</h3>
+              <a href="https://qiblafinder.withgoogle.com/intl/ms/desktop" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-cloud-sun"></i></div><h3 class="katalog-title">DZIKIR PAGI PETANG</h3>
+              <a href="https://sites.google.com/view/produkdigitaltemaislami/kumpulan-dzikir-pagi-dan-petang" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-hands-praying"></i></div><h3 class="katalog-title">ADAB ISLAM</h3>
+              <a href="https://sites.google.com/view/produkdigitaltemaislami/adab-dalam-islam" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-wheat-awn"></i></div><h3 class="katalog-title">AMALAN REZEKI</h3>
+              <a href="https://sites.google.com/view/produkdigitaltemaislami/amalan-pembuka-rezeki" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-book-open-reader"></i></div><h3 class="katalog-title">DOA HARIAN</h3>
+              <a href="https://equran.id/doa" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-scroll"></i></div><h3 class="katalog-title">KISAH NABI</h3>
+              <a href="https://sites.google.com/view/kisah-nabi/home" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-pen-nib"></i></div><h3 class="katalog-title">TULIS AL-QURAN</h3>
+              <a href="https://sites.google.com/view/mizyan-tulis-quran/home" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-book-quran"></i></div><h3 class="katalog-title">EBOOK TAJWID</h3>
+              <a href="https://drive.google.com/file/d/1EFXRmfKhrGReJ4uj9HtQxIu1mX2pxMHl/view?usp=drivesdk" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-brain"></i></div><h3 class="katalog-title">HAFALAN QURAN</h3>
+              <a href="https://sites.google.com/view/mizyan-hafalan-surah/home" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-circle-question"></i></div><h3 class="katalog-title">TEBAK AYAT</h3>
+              <a href="https://sites.google.com/view/mizyan-tebak-ayat/home" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-calendar-check"></i></div><h3 class="katalog-title">PLANNER MUROJAAH</h3>
+              <a href="https://sites.google.com/view/hafizplanner/home" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-kaaba"></i></div><h3 class="katalog-title">KUMPULAN KITAB ISLAMI</h3>
+              <a href="https://sites.google.com/view/paket-700-e-book-islami" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: PRODUK ANAK-ANAK -->
+        <div class="katalog-section">
+          <div class="cat-divider"><div class="cat-badge">👶 PRODUK ANAK-ANAK</div></div>
+          <div class="katalog-grid">
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-film"></i></div><h3 class="katalog-title">VIDEO EDUKASI</h3>
+              <a href="https://drive.google.com/drive/folders/1Rf2aXQuhSy20wbutc08tjyiRgfzJPpzL" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="worksheet">
+              <div class="katalog-icon"><i class="fa-solid fa-file-pen"></i></div><h3 class="katalog-title">WORKSHEET ANAK</h3>
+              <a href="https://www.digitalprodukno1seindonesia.my.id/worksheet" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="worksheet">
+              <div class="katalog-icon"><i class="fa-solid fa-layer-group"></i></div><h3 class="katalog-title">FLASH CARD</h3>
+              <a href="https://www.digitalprodukno1seindonesia.my.id/flash-card" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3 class="katalog-title">QUIZ ANAK SD</h3>
+              <a href="https://www.digitalprodukno1seindonesia.my.id/quiz" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-paw"></i></div><h3 class="katalog-title">EBOOK CERITA</h3>
+              <a href="https://sites.google.com/view/ebook-cerita-hewan/home" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="worksheet">
+              <div class="katalog-icon"><i class="fa-solid fa-print"></i></div><h3 class="katalog-title">39K PRINTABLE</h3>
+              <a href="https://drive.google.com/drive/folders/1xsQ7LMcDhzeIsjdnAJ3XbKW8IO72G8ue" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: KUMPULAN GAME -->
+        <div class="katalog-section">
+          <div class="cat-divider"><div class="cat-badge">🎮 KUMPULAN GAME</div></div>
+          <div class="katalog-grid">
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-puzzle-piece"></i></div><h3 class="katalog-title">ASAH OTAK</h3>
+              <a href="https://www.digitalprodukno1seindonesia.my.id/game-edukasi" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-star-and-crescent"></i></div><h3 class="katalog-title">QUIZ ISLAMI</h3>
+              <a href="https://sites.google.com/view/game-islami-cilik/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-calculator"></i></div><h3 class="katalog-title">QUIZ MTK</h3>
+              <a href="https://sites.google.com/view/game-edukasi-islami-mizyan/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-bolt"></i></div><h3 class="katalog-title">CERDAS CERMAT</h3>
+              <a href="https://sites.google.com/view/game-cerdas-cermat/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-book-bookmark"></i></div><h3 class="katalog-title">QUIZ PAI</h3>
+              <a href="https://sites.google.com/view/game-sains/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-dice"></i></div><h3 class="katalog-title">ULAR TANGGA</h3>
+              <a href="https://sites.google.com/view/game-ular-tanggaa/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-volleyball"></i></div><h3 class="katalog-title">BOUNCE NOKIA</h3>
+              <a href="https://sites.google.com/view/gamebounce/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-locust"></i></div><h3 class="katalog-title">TANGKAP HEWAN</h3>
+              <a href="https://sites.google.com/view/tankap-hewan/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-cat"></i></div><h3 class="katalog-title">PUZZLE HEWAN</h3>
+              <a href="https://sites.google.com/view/puzzle-mizyan/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-cubes"></i></div><h3 class="katalog-title">TETRIS MOBILE</h3>
+              <a href="https://sites.google.com/view/tetris-3d/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-car"></i></div><h3 class="katalog-title">BALAP MOBIL</h3>
+              <a href="https://sites.google.com/view/game-race/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-gamepad"></i></div><h3 class="katalog-title">SUPER MARIO</h3>
+              <a href="https://sites.google.com/view/mario-bros-remake/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-staff-snake"></i></div><h3 class="katalog-title">SNAKE NOKIA</h3>
+              <a href="https://sites.google.com/view/snake-3d/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-user-astronaut"></i></div><h3 class="katalog-title">MATH GALAXY</h3>
+              <a href="https://sites.google.com/view/math-galaxy/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+            <div class="katalog-card" data-cat="game">
+              <div class="katalog-icon"><i class="fa-solid fa-anchor"></i></div><h3 class="katalog-title">KAPAL TEMPUR</h3>
+              <a href="https://sites.google.com/view/naval-battle/home" target="_blank" class="katalog-btn">MAIN GAME</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: PRODUK BONUS -->
+        <div class="katalog-section">
+          <div class="cat-divider"><div class="cat-badge">🎁 PRODUK BONUS</div></div>
+          <div class="katalog-grid">
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-microphone-lines"></i></div><h3 class="katalog-title">SCRIPT & VO</h3>
+              <a href="https://gemini.google.com/share/71487a50d705" target="_blank" class="katalog-btn">LIHAT BONUS</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-file-circle-check"></i></div><h3 class="katalog-title">CREATE SOAL</h3>
+              <a href="https://gemini.google.com/share/867599217d97" target="_blank" class="katalog-btn">LIHAT BONUS</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-chalkboard"></i></div><h3 class="katalog-title">CREATE MATERI</h3>
+              <a href="https://gemini.google.com/share/c8de7e4afbb8" target="_blank" class="katalog-btn">LIHAT BONUS</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-folder-open"></i></div><h3 class="katalog-title">BANK KONTEN</h3>
+              <a href="https://docs.google.com/spreadsheets/d/12lHxAjbdNQWyw6888AyGFYXUlQbzii_dK6FSMrhBfVI/edit?usp=drivesdk" target="_blank" class="katalog-btn">LIHAT BONUS</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-weight-scale"></i></div><h3 class="katalog-title">KALKULATOR DIET</h3>
+              <a href="https://sites.google.com/view/mizyan-kalkulator-diet/home" target="_blank" class="katalog-btn">LIHAT BONUS</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-gift"></i></div><h3 class="katalog-title">KUMPULAN BONUS SPESIAL</h3>
+              <a href="https://www.digitalprodukno1seindonesia.my.id/bonus" target="_blank" class="katalog-btn">LIHAT BONUS</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVISI POIN 2: RESTORASI LENGKAP SECTION 5 (TEMPLATE PREMIUM & PRODUK BARU) -->
+        <div class="katalog-section">
+          <div class="cat-divider"><div class="cat-badge">💎 TEMPLATE PREMIUM & PRODUK BARU</div></div>
+          <div class="katalog-grid">
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-users"></i></div><h3 class="katalog-title">BELAJAR LEADS GEN</h3>
+              <a href="https://drive.google.com/file/d/1y5v1cvAWnW-x7-w0Dj9cehJkK7F75HHn/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-microphone"></i></div><h3 class="katalog-title">VIDEO CARA REKAMAN</h3>
+              <a href="https://drive.google.com/file/d/1LEEMpkQZ6aQQ33Z9McnTKtvXM4iyouT1/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-chart-line"></i></div><h3 class="katalog-title">STRATEGI ONLINE MKTG</h3>
+              <a href="https://drive.google.com/file/d/18QF-LsELAOVRnxaneDIP_7KljiXUVQCU/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-bullhorn"></i></div><h3 class="katalog-title">KONTEN EDUKASI & PROMOSI</h3>
+              <a href="https://drive.google.com/file/d/1LLkn_BTmPyw5jXZS_jT7_D_5mlC9OKjO/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-brands fa-telegram"></i></div><h3 class="katalog-title">KOLAM PROSPEK TELEGRAM</h3>
+              <a href="https://drive.google.com/file/d/1vdFnjm96nHuecmjl15kmRebQn1riAQAO/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-lightbulb"></i></div><h3 class="katalog-title">KONTEN MOTIVASI</h3>
+              <a href="https://drive.google.com/file/d/1wHDX3CkFgXqn0hopLnCdJLpS4g3TQYkx/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-brands fa-whatsapp"></i></div><h3 class="katalog-title">JUALAN DI WHATSAPP</h3>
+              <a href="https://drive.google.com/file/d/1OQPjDaI1rUjCCQJ-GDn8AHajeJNMiTPR/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-list-ol"></i></div><h3 class="katalog-title">LIST BUILDING MASTERY</h3>
+              <a href="https://drive.google.com/file/d/1Fj_GYNTEQiCkeAK1xfCbA09VXYmUX9Mh/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-brain"></i></div><h3 class="katalog-title">MINDFULNESS SOSMED</h3>
+              <a href="https://drive.google.com/file/d/1ypnONIkv5v3Bf0bjXWCDsZZkUixn00wW/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-magnet"></i></div><h3 class="katalog-title">EBOOK LEADS GEN</h3>
+              <a href="https://drive.google.com/file/d/1y3tfIxob02EOmRGj6VgizMLAZ4O-hn1I/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-arrow-trend-up"></i></div><h3 class="katalog-title">KONVERSI IKLAN BISNIS</h3>
+              <a href="https://drive.google.com/file/d/1hVfUWZsepxkIlgkjm1KuO0lawTJkyLbF/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-briefcase"></i></div><h3 class="katalog-title">LIFESTYLE BISNIS</h3>
+              <a href="https://drive.google.com/file/d/1UGSblLn_4KZ7pvSKm1V458-MS_U4zHRy/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-user-tie"></i></div><h3 class="katalog-title">VIDEO PERSONAL BRANDING</h3>
+              <a href="https://drive.google.com/file/d/1qdUunX76Do2NcGKNioHsZsAzEyifarwU/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-globe"></i></div><h3 class="katalog-title">VIDEO BUAT WEB</h3>
+              <a href="https://drive.google.com/file/d/1Qp1aSGGMryJ9FQ1jglwtzYJb0Xuz_SbD/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-clock"></i></div><h3 class="katalog-title">EBOOK TIME PRIORITY</h3>
+              <a href="https://drive.google.com/file/d/1idKJ7Xqptm_EwOGVeGHuTqqPDTTd2D2S/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-building"></i></div><h3 class="katalog-title">KELAS BUSINESS MASTERY</h3>
+              <a href="https://drive.google.com/file/d/1MeYs0xusD-N0jIWusg992ANmN8MOr8Yi/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-tags"></i></div><h3 class="katalog-title">MINI OFFER FORMULA</h3>
+              <a href="https://drive.google.com/file/d/1A9rnEAu5lolFE-E1YYT9rXwiM9bwpV-y/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-share-nodes"></i></div><h3 class="katalog-title">SOSMED MARKETING</h3>
+              <a href="https://drive.google.com/file/d/1ZzTGaQZziAQxo_hnwJItEPYi780ef3_x/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-fire"></i></div><h3 class="katalog-title">VIRAL MARKETING</h3>
+              <a href="https://drive.google.com/file/d/1COaR5ha-lTdVIMPoLfHmEwIEC19Z2Ma5/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-house-laptop"></i></div><h3 class="katalog-title">WFH BUSY MOM</h3>
+              <a href="https://drive.google.com/file/d/165o7SWa5NXJqbTjQGizUn2fFjAD4ETm4/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-vector-square"></i></div><h3 class="katalog-title">PROMOSI INKSCAPE</h3>
+              <a href="https://drive.google.com/file/d/12Q4LxLO6o_rK1WhI7h6CrWNsGEa6LHb5/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-hashtag"></i></div><h3 class="katalog-title">FORMATION HASHTAG IG</h3>
+              <a href="https://drive.google.com/file/d/1e9wihCv226jz1llyjMdTmmXxKRkaperE/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-hashtag"></i></div><h3 class="katalog-title">HASHTAG INSTAGRAM</h3>
+              <a href="https://drive.google.com/file/d/1gSLEIL5452PoIXyvSSDh-Mb8EcYdef4-/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-magnifying-glass"></i></div><h3 class="katalog-title">SEO INSTAGRAM</h3>
+              <a href="https://drive.google.com/file/d/13eQxv6phHuk3VjuROVhrs7pMW11l3ze3/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-users"></i></div><h3 class="katalog-title">STRATEGI FOLLOWERS IG</h3>
+              <a href="https://drive.google.com/file/d/1Od51E4jyfI_609YXw2jdXF8AohgfOzEf/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-brands fa-instagram"></i></div><h3 class="katalog-title">STRATEGY INSTAGRAM</h3>
+              <a href="https://drive.google.com/file/d/1XQ_1KQePkbQmDM9-jJ8xIYo2UiDIg0v-/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+
+            <!-- Seri Mahir Lengkap -->
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-laptop-code"></i></div><h3 class="katalog-title">MAHIR WEBSITE</h3>
+              <a href="https://drive.google.com/file/d/1FGQJCYKDDqAYY9eBJ0wPZiH5K_TAFSXn/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-handshake"></i></div><h3 class="katalog-title">MAHIR AFFILIATE</h3>
+              <a href="https://drive.google.com/file/d/1AZx2GYR_EOsw9OhCM2rBs_wd4yBBJjqw/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-envelope"></i></div><h3 class="katalog-title">MAHIR EMAIL</h3>
+              <a href="https://drive.google.com/file/d/1xZfpd-XXuKYQtFX_bW7BQA3BGBkIH8na/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-telegram"></i></div><h3 class="katalog-title">MAHIR TELEGRAM</h3>
+              <a href="https://drive.google.com/file/d/1T61JdzBY1NHxL1EAxLAXEark2ZJE48dq/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-whatsapp"></i></div><h3 class="katalog-title">MAHIR WHATSAPP</h3>
+              <a href="https://drive.google.com/file/d/1dys8bT3LOS6uRPD-oGXYRbJkzsaYpIyN/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-facebook"></i></div><h3 class="katalog-title">MAHIR FACEBOOK</h3>
+              <a href="https://drive.google.com/file/d/1NYtTDCZgWJxfc0ndu-lmYsMRv_h3VmK1/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-instagram"></i></div><h3 class="katalog-title">MAHIR INSTAGRAM</h3>
+              <a href="https://drive.google.com/file/d/1Wm-trWdpdvezbKCLFLMdwtk7FqUFlfIi/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-id-badge"></i></div><h3 class="katalog-title">MAHIR MEMBERSHIP</h3>
+              <a href="https://drive.google.com/file/d/1Ie7d-z7mSupv1-u3jeXBBMFFqvdkVviO/view?usp=sharing" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-pen-to-square"></i></div><h3 class="katalog-title">MAHIR COPYWRITING</h3>
+              <a href="https://drive.google.com/file/d/1V5q1EoFL_Rk1963zS9xl2FZlqX6h7QKo/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-pager"></i></div><h3 class="katalog-title">MAHIR LANDING PAGE</h3>
+              <a href="https://drive.google.com/file/d/17DMDNYkQ_H0qyet3r2OjCI6vpFshcrD7/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-magnet"></i></div><h3 class="katalog-title">MAHIR LEAD MAGNET</h3>
+              <a href="https://drive.google.com/file/d/1-C4eA4MsaYOmeTKfiQiYf7rWnpQAY7w-/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-bullseye"></i></div><h3 class="katalog-title">MAHIR ONLINE MARKETING</h3>
+              <a href="https://drive.google.com/file/d/1Zqup816hstrDAb-EamnYK7z3QqJGIGw1/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-facebook"></i></div><h3 class="katalog-title">MAHIR FB ADS</h3>
+              <a href="https://drive.google.com/file/d/1GPX6IW4R_-FoO_6VWRdzmee-xgYh5Roc/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><h3 class="katalog-title">MAHIR SALESPAGE</h3>
+              <a href="https://drive.google.com/file/d/1SYFTzhBscKi_vvUEpgGE_BHrEjDLJJ19/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-palette"></i></div><h3 class="katalog-title">MAHIR DESAIN PROFIT</h3>
+              <a href="https://drive.google.com/file/d/1nsHvtGkXOUtciPHyWCE_beaz82qi3xPF/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-chart-bar"></i></div><h3 class="katalog-title">MAHIR TRAFFIC</h3>
+              <a href="https://drive.google.com/file/d/1Q2UUusvstRDAE7v1cvTp3xTK-uqKlgSK/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-copyright"></i></div><h3 class="katalog-title">MAHIR BRANDING</h3>
+              <a href="https://drive.google.com/file/d/1SPO4LIYxnqdTWO4h6_QshJXG55oxZAk2/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-bolt"></i></div><h3 class="katalog-title">MAHIR INSTAN LEADS</h3>
+              <a href="https://drive.google.com/file/d/1SVpw1Udq01HnxwQOvaWZhNiU3ZJ3Qv/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-filter"></i></div><h3 class="katalog-title">MAHIR FUNNEL</h3>
+              <a href="https://drive.google.com/file/d/1wAvyyH8SHL5VDQnYQ6rhKw_pzh0gKq6S/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-envelope-open-text"></i></div><h3 class="katalog-title">MAHIR EMAIL PROFITS</h3>
+              <a href="https://drive.google.com/file/d/1y-yrYl1hFDBbnUIOOIpzkT4bSxchazca/view?usp=drive_link" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-people-arrows"></i></div><h3 class="katalog-title">MAHIR AFFILIATE MKTG</h3>
+              <a href="https://drive.google.com/file/d/1-cldjiH9UsfIAIeTlnNXodIei4-b4BbX/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-share-nodes"></i></div><h3 class="katalog-title">MAHIR SOSMED MKTG</h3>
+              <a href="https://drive.google.com/drive/folders/11c5i2DHEvixo04uGrVAnT_dPqawN47RI" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-laptop-code"></i></div><h3 class="katalog-title">50 ECOURSE DIGITAL MKTG</h3>
+              <a href="https://drive.google.com/drive/u/0/folders/17prCtQGij_EGh_6sCjZvhlnvgOX_KijI" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+
+            <!-- Asset Islami & Desain Tambahan -->
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-mosque"></i></div><h3 class="katalog-title">130+ DESAIN ISLAMI 1</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1mHghHfi6T1ZAWTYMhO3MDBaaBtfmsEhC" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-kaaba"></i></div><h3 class="katalog-title">150+ DESAIN ISLAMI 2</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-person-praying"></i></div><h3 class="katalog-title">MOSLEM CHARACTER KIT</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-star-and-crescent"></i></div><h3 class="katalog-title">30 UCAPAN IDUL FITRI</h3>
+              <a href="https://drive.google.com/drive/folders/1bixBEPYe1lAJJlPQ1H6KwTbTfrIx0_yY" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-moon"></i></div><h3 class="katalog-title">30 UCAPAN RAMADHAN</h3>
+              <a href="https://drive.google.com/drive/folders/1RzK6Q9HAxvAWQPwO5x-Idt9d1D2jWgxM" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-hands-praying"></i></div><h3 class="katalog-title">20 VIDEO LEBARAN</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/16BAJwIPQkt-6YUGFdz4MK8-e8yxFTX9P" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-shapes"></i></div><h3 class="katalog-title">90 ASSET SHAPE RELIGI</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/16BAJwIPQkt-6YUGFdz4MK8-e8yxFTX9P" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="islami">
+              <div class="katalog-icon"><i class="fa-solid fa-quote-right"></i></div><h3 class="katalog-title">30 RAMADHAN QUOTES</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/16BAJwIPQkt-6YUGFdz4MK8-e8yxFTX9P" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+
+            <!-- Template & Asset Sosmed Tambahan -->
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-timeline"></i></div><h3 class="katalog-title">30 TIMELINE SELLING</h3>
+              <a href="https://drive.google.com/drive/folders/1ytDF90SJpdKxH-UCcvvG-l7Yy_tUazWG" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-mobile-screen"></i></div><h3 class="katalog-title">30 STORIES TELLING</h3>
+              <a href="https://drive.google.com/drive/folders/1Fj8xKKxOrYcTb4-KOJ68FOZ-7Z574lN-" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-tags"></i></div><h3 class="katalog-title">30 DISKON RAMADHAN</h3>
+              <a href="https://drive.google.com/drive/folders/1VZ4ROodGohIDEkLso4LUdV33XzduL32v" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-cart-arrow-down"></i></div><h3 class="katalog-title">30 CARA ORDER PRODUK</h3>
+              <a href="https://drive.google.com/drive/folders/1wg2monv9BN3q9c4N74ceDRwy__ZozAU5" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-gift"></i></div><h3 class="katalog-title">30 DESAIN GIVEAWAY</h3>
+              <a href="https://drive.google.com/drive/folders/15pS6YdMd6rek95ayw66pwfnOZ3MkaCsf" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-comments"></i></div><h3 class="katalog-title">90 DESAIN UCAPAN IG</h3>
+              <a href="https://drive.google.com/drive/folders/1LEMXnnV1QAdFhsxdabd2tQ9vqXEuuMUN" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-book"></i></div><h3 class="katalog-title">30 DESAIN COVER BUKU</h3>
+              <a href="https://drive.google.com/drive/folders/1eUZAApUH-7Mflpv7mR8xcm0hvJBHB889" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-puzzle-piece"></i></div><h3 class="katalog-title">360 FEED PUZZLE IG</h3>
+              <a href="https://drive.google.com/drive/folders/1JgRVrQJfw9V3XGkDSvCDVda1e61QUxE1" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-book-open"></i></div><h3 class="katalog-title">280 EBOOK BISNIS ONLINE</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1mHghHfi6T1ZAWTYMhO3MDBaaBtfmsEhC" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-blog"></i></div><h3 class="katalog-title">180 DESAIN TIMELINE BLOG</h3>
+              <a href="https://drive.google.com/drive/folders/1GEqKQuC_bUOaIrr7PSDzVHWBllpU6rsB" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-comment-medical"></i></div><h3 class="katalog-title">30 DESAIN NASEHAT</h3>
+              <a href="https://drive.google.com/drive/folders/1l-1OcGxpBTGbXj_5TT20pXG4xf5NSAmz" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-hourglass-half"></i></div><h3 class="katalog-title">30 COUNTDOWN RAMADHAN</h3>
+              <a href="https://drive.google.com/drive/folders/1eq-onts3aEcWl4msJ_UZ834hnGWgfccz" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-gem"></i></div><h3 class="katalog-title">VIDEO PRESENTASI LUX</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-users-viewfinder"></i></div><h3 class="katalog-title">150 PEOPLE TRANSPARANT</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3 class="katalog-title">50 VIDEO WISUDA</h3>
+              <a href="https://drive.google.com/file/d/1KFeMASlqc4zS4UlouEzjlcJIFs4YT2RG/view?usp=drivesdk" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-facebook"></i></div><h3 class="katalog-title">RATUSAN FB ADS</h3>
+              <a href="https://drive.google.com/drive/u/4/folders/1-7qx9TPeLVX8jscizPkfuxi-VLr0EOMS" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-instagram"></i></div><h3 class="katalog-title">1000 KHUSUS INSTAGRAM</h3>
+              <a href="https://drive.google.com/drive/u/5/folders/1rblud_5CPNCcoO9-sAsmXhHUK7OCrOi" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-burger"></i></div><h3 class="katalog-title">1200 DESAIN MAKANAN</h3>
+              <a href="https://drive.google.com/drive/u/5/folders/1GfxOsLh0HXFB24WJ6wPHjFgyGMMHZWkO" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-file-powerpoint"></i></div><h3 class="katalog-title">RIBUAN PPT</h3>
+              <a href="https://drive.google.com/drive/folders/1GdrBVh7wPP5NQrZrxYOgo9vibfSojD1A" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-ring"></i></div><h3 class="katalog-title">190+ VIDEO UNDANGAN</h3>
+              <a href="https://drive.google.com/drive/u/5/folders/1Ev3wPygDnrgYHfT4rg02tnBlfcTV7QyY" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-link"></i></div><h3 class="katalog-title">70+ JSON BIOLINK</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1r25eV7PW9Z1Sz1Y3M4S14WFVgQRO7KZQ" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-bell"></i></div><h3 class="katalog-title">NOTIFY PRO + BONUS</h3>
+              <a href="https://drive.google.com/drive/u/0/folders/1FcKAVMO4tH1EamSZtO1IGp2FBLtouCBW" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-crown"></i></div><h3 class="katalog-title">40 E-BOOK PREMIUM</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ZwuCZFrWgWtWGjRO95p5Nfo4lamDO9RW" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-toolbox"></i></div><h3 class="katalog-title">GRAPHIC TOOLS AFFILIATE</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-quote-left"></i></div><h3 class="katalog-title">110 VIRAL QUOTE</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-percent"></i></div><h3 class="katalog-title">180 DISCOUNT LABEL</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-icons"></i></div><h3 class="katalog-title">1300+ ICON HD</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1mHghHfi6T1ZAWTYMhO3MDBaaBtfmsEhC" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-bullhorn"></i></div><h3 class="katalog-title">170+ SUPER PROMOSI</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/17tCgqkHtRDshV7mVeGciSFidwOxd09Xp" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-youtube"></i></div><h3 class="katalog-title">380+ MASTER YOUTUBE</h3>
+              <a href="https://drive.google.com/drive/u/5/folders/10eNhWCakB6emQ2qXvCRAijMhd0x_EFej" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-video"></i></div><h3 class="katalog-title">40+ VIDEO ANIMASI</h3>
+              <a href="https://drive.google.com/drive/u/5/folders/1GWXGOBHZpx8VXT0Hm9B3AE7N7qhfeRPd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-eye"></i></div><h3 class="katalog-title">10 VIDEO HYPNOSELLING</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-child"></i></div><h3 class="katalog-title">NANO CARTOON CHARACTER</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+
+            <!-- Produk Digital Lainnya -->
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-book"></i></div><h3 class="katalog-title">KUMPULAN E-BOOK</h3>
+              <a href="https://www.digitalprodukno1seindonesia.my.id/e-book" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-link"></i></div><h3 class="katalog-title">KUMPULAN LINK PRODUK</h3>
+              <a href="https://sites.google.com/view/generasi554/link-produk" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-image"></i></div><h3 class="katalog-title">KUMPULAN COVER PRODUK</h3>
+              <a href="https://drive.google.com/drive/folders/1rhkD64BzeoCNTu-5MsNWr0V9XKROIrEz" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-lightbulb"></i></div><h3 class="katalog-title">KUMPULAN TIPS JUALAN</h3>
+              <a href="https://drive.google.com/drive/folders/1pyFeRdtzHqgOY0XFiwFUZ1WC3eERb3PT" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-chalkboard-user"></i></div><h3 class="katalog-title">TUTORIAL LYNK.ID</h3>
+              <a href="https://sites.google.com/view/adam-akmal-arsyad/tutorial" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-circle-play"></i></div><h3 class="katalog-title">VIDEO TUTORIAL LENGKAP</h3>
+              <a href="https://sites.google.com/view/opick-digital-081331661370/landing-page" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-toolbox"></i></div><h3 class="katalog-title">TOOLS PILIHAN BISNIS</h3>
+              <a href="https://sites.google.com/view/paket-bundling-edukasi" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-film"></i></div><h3 class="katalog-title">100 ANIMASI INDO</h3>
+              <a href="https://drive.google.com/file/d/1_L6iJz5rC5G9FGrfTZoX1HXrg4sFo2AZ/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-language"></i></div><h3 class="katalog-title">48 ANIMASI INGGRIS</h3>
+              <a href="https://drive.google.com/file/d/1vKOw3uzn35DJr53Ib78JBwfvPpk_SZ5K/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-mobile-screen-button"></i></div><h3 class="katalog-title">REFERENSI APLIKASI</h3>
+              <a href="https://drive.google.com/drive/folders/1Gm7n9wDbfbGes59UqhB5RMk4Izj1fMKK" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-cubes"></i></div><h3 class="katalog-title">DIGITAL ASSETS BUNDLE</h3>
+              <a href="https://drive.google.com/drive/folders/1Q4W-gR73g_6Sp0S-ys7IS4PFKNthZ6bC" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-list-check"></i></div><h3 class="katalog-title">STEP JUALAN PRODUK</h3>
+              <a href="https://sites.google.com/view/mizyan-digital/tutorial-promosi/mulai-dari-sini-step-by-step" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-code"></i></div><h3 class="katalog-title">PROMPT MENTAH AI</h3>
+              <a href="https://docs.google.com/document/d/1sdIUGv0VUz7lpjnWh587IIIyoiDO-fHldO0rlgrM1SM/edit" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-book-open"></i></div><h3 class="katalog-title">48 BUKU CERITA B.INGGRIS</h3>
+              <a href="https://drive.google.com/file/d/13J6yOoiUiIwp7sK2r-13zI36zKQuV9_9/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-chart-line"></i></div><h3 class="katalog-title">20+ FINANCE SOCIAL MEDIA</h3>
+              <a href="https://www.canva.com/design/DAGSSKhRum0/sesUclbzYyTSUDrktkYrHQ/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="worksheet">
+              <div class="katalog-icon"><i class="fa-solid fa-spell-check"></i></div><h3 class="katalog-title">70+ WORKSHEET BACA</h3>
+              <a href="https://drive.google.com/drive/folders/1hg_-b2xUUqvXdoXQ9MbM3XoxeX5l1HDj" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-book-journal-whills"></i></div><h3 class="katalog-title">82 HAL TEMPLATE EBOOK</h3>
+              <a href="https://www.canva.com/design/DAGWhWbP_SI/Q-sKDZpbPIYXWchZNz_IfA/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-lightbulb"></i></div><h3 class="katalog-title">1000 IDE PRODUK DIGITAL</h3>
+              <a href="https://drive.google.com/file/d/1sMifdrNxyrhe6LAdsHoP1fVVNtHwsLC4/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-pen-fancy"></i></div><h3 class="katalog-title">30 DAY GUIDED JOURNAL</h3>
+              <a href="https://www.canva.com/design/DAF5WZVv0nM/go92BvPmu7PxUcNyoIeoDg/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-file-excel"></i></div><h3 class="katalog-title">8 LIFESTYLE SHEET BUNDLE</h3>
+              <a href="https://drive.google.com/drive/folders/1Go2yMHMEIArDxzFTJiPR9uBo5-arV-Sh" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="worksheet">
+              <div class="katalog-icon"><i class="fa-solid fa-tree"></i></div><h3 class="katalog-title">45+ AKTIVITAS NATAL ANAK</h3>
+              <a href="https://www.canva.com/design/DAF1m0ImRBc/rBH2tWdVElGp1jeIZUJOXw/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="worksheet">
+              <div class="katalog-icon"><i class="fa-solid fa-palette"></i></div><h3 class="katalog-title">49+ MEWARNAI ALFABET</h3>
+              <a href="https://drive.google.com/drive/folders/13Bb6SGaqDwQNOhkiFvuBBvdU00taA1Mf" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-calendar-days"></i></div><h3 class="katalog-title">DIGITAL PRODUCT PLANNER</h3>
+              <a href="https://www.canva.com/design/DAF6wFMUePY/upE6FHcgPob7BJxcwEHC6A/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-list-check"></i></div><h3 class="katalog-title">PRINTABLE TRACKER BUNDLE</h3>
+              <a href="https://www.canva.com/design/DAF6ofd2VF8/tCWxG--lrOXH3OB-fPuv1w/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-calendar-check"></i></div><h3 class="katalog-title">DAILY LIFE PLANNER</h3>
+              <a href="https://www.canva.com/design/DAF7atJsoMs/o7tGSgLb_9rtbSgiXYJ7_w/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-instagram"></i></div><h3 class="katalog-title">BUSINESS IG TEMPLATES</h3>
+              <a href="https://www.canva.com/design/DAF1Oav2n4g/UNF1DnHV9F5e5ibHBlwBMA/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-shopify"></i></div><h3 class="katalog-title">PRINTABLE SHOPIFY PLANNER</h3>
+              <a href="https://www.canva.com/design/DAF4708i2XU/RlS9v39_R257dX7U80dK1w/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><h3 class="katalog-title">FAMILY FINANCIAL PLANNER</h3>
+              <a href="https://www.canva.com/design/DAF2r5CaBmI/m-z8rixX_JZyA60o09e72A/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-weight-scale"></i></div><h3 class="katalog-title">WEIGHT LOSS JOURNAL</h3>
+              <a href="https://www.canva.com/design/DAF4-yM1MXk/rOVgqsdD7UWRuG5ZBWUDFw/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-share-nodes"></i></div><h3 class="katalog-title">SOSMED POST PLANNER</h3>
+              <a href="https://www.canva.com/design/DAF9hS21aLg/8qQqjqye0aNblDkX9oAt7g/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-heart"></i></div><h3 class="katalog-title">BUKU MEWARNAI CINTA</h3>
+              <a href="https://www.canva.com/design/DAF74rDpwYg/UnFue53hhH5_hOzFTGNM3w/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-ring"></i></div><h3 class="katalog-title">PRINTABLE WEDDING PLANNER</h3>
+              <a href="https://www.canva.com/design/DAGECiBeCXs/qIkE2ptYi1xql-dV0ga6NA/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-book"></i></div><h3 class="katalog-title">TEMPLATE BUKU PENERBIT</h3>
+              <a href="https://docs.google.com/document/d/1RkP3iRj2izBH_tTKgDal7Lg-JZ4qrhV1/edit" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-leaf"></i></div><h3 class="katalog-title">NATURE VIDEOS REELS</h3>
+              <a href="https://www.canva.com/design/DAGNwT5b3H4/_Q95p_aOd0LnFcujy0FNfA/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-regular fa-gem"></i></div><h3 class="katalog-title">LUXURY IG STORIES</h3>
+              <a href="https://drive.google.com/file/d/1nODH3DqDkuXdsX9mS6FpLLAuu5V5XWFs/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-mobile-screen"></i></div><h3 class="katalog-title">40 REEL COVERS</h3>
+              <a href="https://drive.google.com/file/d/1FbuG46OduPoEOpDoC0AUffgHN6gFnhsw/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-fire"></i></div><h3 class="katalog-title">30 MOTIVATIONAL REELS</h3>
+              <a href="https://drive.google.com/file/d/1KIpRJENJjFXVX8nIzzq2Km0cQ127hpL4/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-bullhorn"></i></div><h3 class="katalog-title">EBOOK CONTENT MARKETING</h3>
+              <a href="https://drive.google.com/drive/u/0/folders/18RWdPcUanx1z6H-f4yeL5n97cCuyxJAm" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-brands fa-whatsapp"></i></div><h3 class="katalog-title">EBOOK 1000 KONTAK WA</h3>
+              <a href="https://drive.google.com/drive/u/0/folders/18RWdPcUanx1z6H-f4yeL5n97cCuyxJAm" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-children"></i></div><h3 class="katalog-title">100 VIDEO CERITA ANAK</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1NUshLSjn3ADCTro8tSy3KBLixUv6GUxf" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-icons"></i></div><h3 class="katalog-title">10.000+ VECTOR ICONS</h3>
+              <a href="https://drive.google.com/drive/folders/1pvC-qOXpCvD-tcVNEDtfRFeIUQA_WJZa" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-user-secret"></i></div><h3 class="katalog-title">6.000 FACELESS VIDEOS</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1hWAQsLJbbQ-FAr4Zxqt60qeI6Tz3yixO" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-link"></i></div><h3 class="katalog-title">7.500 KONTEN AFFILIATE</h3>
+              <a href="https://drive.google.com/drive/folders/1sGGjYQjp2SQzJ0bXSUPPZf_p-fCujJTd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-database"></i></div><h3 class="katalog-title">30.000 BANK VIDEO</h3>
+              <a href="https://drive.google.com/drive/folders/1JFZxcjruCu0Sc_2RKX2NNXQ1YVPihlkG" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-object-group"></i></div><h3 class="katalog-title">3.000 TEMPLATES CANVA</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1lBhHBC6dx38rMT0RfvoVpxnOgvBb00Pm" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-calendar-check"></i></div><h3 class="katalog-title">1.900+ PLANNER TRACKER</h3>
+              <a href="https://drive.google.com/drive/u/0/folders/1N_MhvRp4Wp-nn4rf7nv3aP6A8Q4bUD0g" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-file-excel"></i></div><h3 class="katalog-title">150+ RUMUS EXCEL</h3>
+              <a href="https://drive.google.com/drive/u/0/folders/1qrUaow83dP0HCWzHLIqQGVRmUu6lA_Ct" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-money-check-dollar"></i></div><h3 class="katalog-title">APLIKASI PESANGON EXCEL</h3>
+              <a href="https://drive.google.com/drive/u/0/folders/1tCEmQGPEyBnSea_pYToLuS5qESCu2kv7" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-globe"></i></div><h3 class="katalog-title">180 TEMPLATE WEB CANVA</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1qJaZgzizFeE-H9lYL0NJoXHQcQerc0bP" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-brands fa-facebook"></i></div><h3 class="katalog-title">TEMBUS 100JT FB GRATISAN</h3>
+              <a href="https://drive.google.com/file/d/1I6PgjIgzD6fD-413ssVdtlAxJgZSUsuU/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-pen-nib"></i></div><h3 class="katalog-title">50 COPYWRITING FB ADS</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1RA-JZQ-K_6ZyD7DBaxx1paOLpy0TQh8e" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-shirt"></i></div><h3 class="katalog-title">100 FILE DESAIN KAOS</h3>
+              <a href="https://drive.google.com/drive/folders/1X-BBAWEVXyS9_tmosArMBz6CJZiIWLai" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-square-facebook"></i></div><h3 class="katalog-title">KELAS FACEBOOK PRO</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1-3QwsLBeF4Uld5mmAU_VhQ9v0bFJvZxQ" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-user-astronaut"></i></div><h3 class="katalog-title">NANO KARTUN KARAKTER</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-file-powerpoint"></i></div><h3 class="katalog-title">TEMPLATE PRESENTATION</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1ioSRGAG6S8p4n6ubIpHJ50v8ijz-FVKd" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-moon"></i></div><h3 class="katalog-title">KISAH NABI & RASUL</h3>
+              <a href="https://sites.google.com/view/generasi554/e-book/nabi-nabi" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-brain"></i></div><h3 class="katalog-title">MINDSET COPYWRITING</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1RA-JZQ-K_6ZyD7DBaxx1paOLpy0TQh8e" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-rocket"></i></div><h3 class="katalog-title">EBOOK PRODUCT LAUNCH</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1RA-JZQ-K_6ZyD7DBaxx1paOLpy0TQh8e" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-laptop-code"></i></div><h3 class="katalog-title">170+ DESAIN PPT</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/17tCgqkHtRDshV7mVeGciSFidwOxd09Xp" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-money-bill-trend-up"></i></div><h3 class="katalog-title">25+ TEMPLATE KEUANGAN</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/1yraIhY95kdjWejFkavKXoCCdAOcLbePG" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-bezier-curve"></i></div><h3 class="katalog-title">10.000+ TEMPLATE CANVA</h3>
+              <a href="https://drive.google.com/file/d/1bWkauricYEg2QvuwCkyf15Sa53zXygrN/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-file-contract"></i></div><h3 class="katalog-title">100+ TEMPLATE CV</h3>
+              <a href="https://drive.google.com/drive/folders/1LRmhDEGBodDDq1sH6ude0Cz4OR3JGHcX" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-note-sticky"></i></div><h3 class="katalog-title">ULTIMATE NOTION BUNDLE</h3>
+              <a href="https://drive.google.com/drive/folders/1u__Kd7YRR6PzFmr2P5u1zbSJWspVYADZ" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-regular fa-calendar-days"></i></div><h3 class="katalog-title">TEMPLATE KONTEN PLANNER</h3>
+              <a href="https://drive.google.com/file/d/1efzgbojDiS6lEYTsB-kxrXaV-eSpuwci/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-store"></i></div><h3 class="katalog-title">1000+ IDE KONTEN JUALAN</h3>
+              <a href="https://docs.google.com/spreadsheets/d/1tyfEXEbXFllq09m9jHJE655_G_1PT-mq1IPEmKH0HFc/edit" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-utensils"></i></div><h3 class="katalog-title">1.200+ VIRAL MASAKAN</h3>
+              <a href="https://drive.google.com/drive/folders/1-REUiM9hIxCSmwzl9IObN1hI7efsYIs4" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="worksheet">
+              <div class="katalog-icon"><i class="fa-solid fa-puzzle-piece"></i></div><h3 class="katalog-title">39.000+ PRINTABLE ANAK</h3>
+              <a href="https://drive.google.com/drive/folders/1xsQ7LMcDhzeIsjdnAJ3XbKW8IO72G8ue" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-bag-shopping"></i></div><h3 class="katalog-title">OPTIMASI SHOPEE AFFILIATE</h3>
+              <a href="https://www.youtube.com/watch?v=rsT_pfTocfY" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-object-ungroup"></i></div><h3 class="katalog-title">MAHIR CANVA + BONUS</h3>
+              <a href="https://drive.google.com/drive/folders/13jxp3oytV9jRoT93k03H0rFNcyGo8uUK" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-scissors"></i></div><h3 class="katalog-title">MAHIR CAPCUT</h3>
+              <a href="https://drive.google.com/drive/folders/1p8Yu6tmfxAfyWV_wsNUn5fz57a29ekfC" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-wordpress"></i></div><h3 class="katalog-title">MAHIR ELEMENTOR</h3>
+              <a href="https://drive.google.com/drive/folders/13WplAFhlq3I2pHRFmz5jYNA8RXb-hgJc" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-brands fa-tiktok"></i></div><h3 class="katalog-title">MAHIR TIKTOK</h3>
+              <a href="https://drive.google.com/drive/folders/1lmoiG-QxvEqiRWK0ji6Ggy4ouC3tZy3e" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-paw"></i></div><h3 class="katalog-title">EBOOK CERITA HEWAN</h3>
+              <a href="https://sites.google.com/view/generasi554/e-book/cerita-hewan" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ebook">
+              <div class="katalog-icon"><i class="fa-solid fa-robot"></i></div><h3 class="katalog-title">EBOOK DARI CHATGPT</h3>
+              <a href="https://drive.google.com/file/d/1KQtn9kNG3dGENKetOmHFKjzoT7lbamjG/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-cart-shopping"></i></div><h3 class="katalog-title">2600+ SHOPEE AFFILIATE</h3>
+              <a href="https://drive.google.com/drive/folders/1oKyFp8ciXYGuiTw8Uu2beedyhfsvMc_p" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-hand-fist"></i></div><h3 class="katalog-title">3500+ VIDEO MOTIVASI</h3>
+              <a href="https://drive.google.com/drive/folders/10B5BXcQWLHAcKD9gzF_rcfG2fT1WtokE" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div><h3 class="katalog-title">MAHIR DATANG TRAFFIC</h3>
+              <a href="http://www.mediafire.com/file/9ez6xjsq9mh53o1/28._PLR_MASTER_SEO.rar/file" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h3 class="katalog-title">VIDEO EDITING EFFECTS</h3>
+              <a href="https://drive.google.com/drive/folders/1H9kXxwun58nJjTHZ_6_WYvVknLiMP2KP" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="worksheet">
+              <div class="katalog-icon"><i class="fa-solid fa-star-and-crescent"></i></div><h3 class="katalog-title">1000+ WORKSHEET MUSLIM</h3>
+              <a href="https://drive.google.com/drive/folders/1H44EMa8F0QcEL9EqMuH3Td0PZCpf5j3u" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="tools">
+              <div class="katalog-icon"><i class="fa-solid fa-table-list"></i></div><h3 class="katalog-title">DATABASE HOOK JUALAN</h3>
+              <a href="https://docs.google.com/spreadsheets/d/1E89In1xB8lsztPtznYULcD5KBjv4a3LGSmqLg9n8oh0/edit" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVISI POIN 2: RESTORASI LENGKAP SECTION 6 (BUNDLE SPESIAL ZIP FILE) -->
+        <div class="katalog-section">
+          <div class="cat-divider">
+            <div class="cat-badge" style="border-color:#eab308; color:#eab308;">📦 BUNDLE SPESIAL (FILE BESAR)</div>
+          </div>
+          <div class="zip-warning-box">
+            <i class="fa-solid fa-file-zipper"></i>
+            <h4>PERHATIAN: FILE BERUKURAN BESAR</h4>
+            <p>Kumpulan produk di bawah ini dikompres ke format <strong>ZIP/RAR</strong>. Anda wajib mengekstraknya menggunakan aplikasi (seperti WinRAR/ZArchiver) sebelum bisa melihat isinya.</p>
+            <a href="https://drive.google.com/file/d/1fcp9M3xd-MbxFlK9qv-PPNqHNvzxP-uj/view" target="_blank" class="btn-tutorial-zip">
+              <i class="fa-brands fa-youtube"></i> Tonton Tutorial Cara Ekstrak File
+            </a>
+          </div>
+
+          <div class="katalog-grid">
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-file-excel"></i></div><h3 class="katalog-title">50 EXCEL FINANCIAL</h3>
+              <a href="https://drive.google.com/file/d/168t2XPN2hZRV6QRAClHCKs2cbUxCq1ln/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-file-excel"></i></div><h3 class="katalog-title">19 EXCEL TEACHERS</h3>
+              <a href="https://drive.google.com/file/d/1XbG5Mkpbje2wiR1zBSMPR30A59eGj8LG/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="campuran">
+              <div class="katalog-icon"><i class="fa-solid fa-file-excel"></i></div><h3 class="katalog-title">999+ EXCEL CAMPUR</h3>
+              <a href="https://drive.google.com/file/d/18-eU0otcvhlFr2ob9lAkyVMrVuCp0BVa/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-powerpoint"></i></div><h3 class="katalog-title">300 DESAIN TEMA PPT</h3>
+              <a href="https://drive.google.com/file/d/1bk2pGVOknLDSbxWM7W2ft1nklnI4TJPe/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-file-powerpoint"></i></div><h3 class="katalog-title">118 PPT IDUL FITRI</h3>
+              <a href="https://drive.google.com/file/d/17p_83Vs16czlva8jqn9pUwRecFlZ9Bum/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-file-powerpoint"></i></div><h3 class="katalog-title">500 PERNIKAHAN PPT</h3>
+              <a href="https://drive.google.com/file/d/1iX17Ybyw9XEFqaRpaU2TWHERp6c7wqTF/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-desktop"></i></div><h3 class="katalog-title">36 VIDEO DISPLAY PPT</h3>
+              <a href="https://drive.google.com/file/d/1xW1Vkul_ntUAcQyW0r0FuUJW4Rn7lVW-/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-images"></i></div><h3 class="katalog-title">144 COVER STORY PPT</h3>
+              <a href="https://drive.google.com/file/d/1Nqvz6GFg4m1T4F7nRliK4UuXhoglXGVi/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-blog"></i></div><h3 class="katalog-title">140 MICROBLOG PPT</h3>
+              <a href="https://drive.google.com/file/d/1EqldtyYhMDkvkpm5gs3QKBZKVpPuLoBZ/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-table-cells-large"></i></div><h3 class="katalog-title">29 PUZZLE GRID PPT</h3>
+              <a href="https://drive.google.com/file/d/1cnUSRkOdtiwe8kaf81ZBKTuDOsQ7YScV/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-store"></i></div><h3 class="katalog-title">220 MARKETFRAME PPT</h3>
+              <a href="https://drive.google.com/file/d/1tHP4F-nHjufDmx0ge6AkUlRMiW8ltsRN/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-quote-right"></i></div><h3 class="katalog-title">170 QUOTES B&W PPT</h3>
+              <a href="https://drive.google.com/file/d/1HepWuo3wDoRFRKLjmXk7ZJpKao6ARXBR/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-box-open"></i></div><h3 class="katalog-title">90 COVER BOX PPT</h3>
+              <a href="https://drive.google.com/file/d/1dSBjkhMcYxpdcaEnRyAOgU_wru0UOo5W/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-instagram"></i></div><h3 class="katalog-title">66 DESAIN IG PPT</h3>
+              <a href="https://drive.google.com/file/d/1Bj51qpl06_ArTAh4jaet4GUMpztlNNzy/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-flag"></i></div><h3 class="katalog-title">50 PPT HUT RI</h3>
+              <a href="https://drive.google.com/file/d/1AFithho0FVt5VwgG0_KrselAlN2kpcZP/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-cake-candles"></i></div><h3 class="katalog-title">50 ANNIVERSARY PPT</h3>
+              <a href="https://drive.google.com/file/d/1zeFtA709VzMkJlm14pnEKPCvKQRS-iGu/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-moon"></i></div><h3 class="katalog-title">131 RAMADHAN PPT 2</h3>
+              <a href="https://drive.google.com/file/d/1dgIopaNyoELYXVJp_MQpL56_AvVxJ700/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-moon"></i></div><h3 class="katalog-title">300 RAMADHAN PPT 3</h3>
+              <a href="https://drive.google.com/file/d/1r6hkIM873XVym6eeEFv7qfVREMI1tLtx/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-mosque"></i></div><h3 class="katalog-title">150 IDUL FITRI PPT</h3>
+              <a href="https://mega.nz/file/ZHlyUC5A#zJpNtpW727ffGzNLDFoOmb3wdg_a2Sq3Gq41xcaVQ30" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-cow"></i></div><h3 class="katalog-title">70 QURBAN PPT 2</h3>
+              <a href="https://drive.google.com/file/d/1WTge4OC1mCeA6UscZ6wb5s9TKNlcV9si/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-icons"></i></div><h3 class="katalog-title">331 ICON PPT</h3>
+              <a href="https://drive.google.com/file/d/16dyIfKXDIfZ_xYkYoCuFfv6o6rgBJXPD/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-pen-nib"></i></div><h3 class="katalog-title">64 LOGO PPT</h3>
+              <a href="https://drive.google.com/file/d/1kPLL8OBd1RpNmfOCI6E4dbaM3NZBDOUL/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-regular fa-image"></i></div><h3 class="katalog-title">105 BACKGROUND PPT</h3>
+              <a href="https://drive.google.com/file/d/13U1LybBXg7E2-Wcp7BCp5R9I24dimkS2/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-rectangle-ad"></i></div><h3 class="katalog-title">121 BANNER PPT</h3>
+              <a href="https://drive.google.com/file/d/1LaVDiWvyqOo-WQIv1dcYGrxeio3_2x61/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-rectangle-ad"></i></div><h3 class="katalog-title">05 BANNER TEMA PPT</h3>
+              <a href="https://drive.google.com/file/d/1qw_6vKflltaJPjmilw6fpPUVBv25Tx77/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-flag"></i></div><h3 class="katalog-title">70 HUT RI PPT 2</h3>
+              <a href="https://drive.google.com/file/d/10N8T-EoYm0XXt039tK3Sq_odq_zhzxDD/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-flag"></i></div><h3 class="katalog-title">70 HUT RI PPT 3</h3>
+              <a href="https://drive.google.com/file/d/1WnDwZlSmJOCNg7GaSNY1sTWgdL9ExFXB/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-moon"></i></div><h3 class="katalog-title">500 RAMADHAN PPT 4</h3>
+              <a href="https://drive.google.com/file/d/1UminWYq6vp85ZFppIVR1lIS5QNPKcdUM/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-id-card"></i></div><h3 class="katalog-title">PERSONAL BRANDING PPT</h3>
+              <a href="https://drive.google.com/file/d/1S8izExZd1ea9Wg6XtCUa0ZWzALeOFAYa/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-chart-pie"></i></div><h3 class="katalog-title">INFOGRAFIS PPT</h3>
+              <a href="https://drive.google.com/file/d/1Y4rctHrXSTRFlhboKtD1Qgg0lafK2BS9/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-layer-group"></i></div><h3 class="katalog-title">RIBUAN PERSENTASI PPT</h3>
+              <a href="https://drive.google.com/drive/folders/1GdrBVh7wPP5NQrZrxYOgo9vibfSojD1A" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-gem"></i></div><h3 class="katalog-title">2100+ PPT SUPER LUX</h3>
+              <a href="https://drive.google.com/drive/u/5/folders/1pC-5T_yPgJ-EmqF7Fx7mZbFnJ9b1D89q" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-laptop-code"></i></div><h3 class="katalog-title">MAHIR DESAIN PPT</h3>
+              <a href="https://drive.google.com/drive/u/3/folders/16BAJwIPQkt-6YUGFdz4MK8-e8yxFTX9P" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-wordpress"></i></div><h3 class="katalog-title">130 ELEMENTOR DIGITAL</h3>
+              <a href="https://drive.google.com/file/d/1xyrCLJxl_mXTeFuSsK1A3TOHGhGqbo3p/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-ring"></i></div><h3 class="katalog-title">50 NIKAH ELEMENTOR 1</h3>
+              <a href="https://drive.google.com/file/d/1DmXAe94_Of-GESRBrxEOG_PSDaTyB8dJ/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-ring"></i></div><h3 class="katalog-title">50 NIKAH ELEMENTOR 2</h3>
+              <a href="https://drive.google.com/file/d/1_aA8NCp06Ua10vbq9OHiPkIatzJcwzu2/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-shirt"></i></div><h3 class="katalog-title">47 FASHION ELEMENTOR</h3>
+              <a href="https://drive.google.com/file/d/1GFrerOFTKY8rSJE2hKmUQGZkIsuHTLn5/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-ring"></i></div><h3 class="katalog-title">100 NIKAH ELEMENTOR 3</h3>
+              <a href="https://drive.google.com/file/d/1JeWhHFwawBr3AvK1vZutN0cIMzt07yOV/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-ring"></i></div><h3 class="katalog-title">70 NIKAH ELEMENTOR 4</h3>
+              <a href="https://drive.google.com/file/d/1BDvysCbjk-qSfekvMqhUB_iRuC6qJhSs/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-ring"></i></div><h3 class="katalog-title">100 NIKAH ELEMENTOR 5</h3>
+              <a href="https://drive.google.com/file/d/1sM9rAQ-gxOkCYjcQEv893QhXAXAGeV2a/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-baby-carriage"></i></div><h3 class="katalog-title">100 AQIQAH ELEMENTOR</h3>
+              <a href="https://drive.google.com/file/d/16gHfyxv_UeTAcJcjcPLlmq3-SWqCH15H/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3 class="katalog-title">70 WISUDA ELEMENTOR</h3>
+              <a href="https://drive.google.com/file/d/1L_QXImsFekuPGfmCtV1VbtK1yMu_qEmA/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-solid fa-layer-group"></i></div><h3 class="katalog-title">50 NICHE ELEMENTOR</h3>
+              <a href="https://drive.google.com/file/d/1nCCMpe04kxC-NPB7YkAVGGg_CME-eSFG/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-wordpress"></i></div><h3 class="katalog-title">WP TEMATOKO INSTA</h3>
+              <a href="https://drive.google.com/file/d/1yDwPDH6ccPFfkt_nM4wJZZhGyZN1JUPc/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-wordpress"></i></div><h3 class="katalog-title">WP TEMATOKO FOOD</h3>
+              <a href="https://drive.google.com/file/d/14-lp79h16gIUt5A1RJBGdDUb1FaIy6g5/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-wordpress"></i></div><h3 class="katalog-title">WP TEMATOKO TIKTOK</h3>
+              <a href="https://drive.google.com/file/d/1P6qed8MyA9VuPxmHgv-BaYLBzw6uaNGp/view" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="ecourse">
+              <div class="katalog-icon"><i class="fa-solid fa-globe"></i></div><h3 class="katalog-title">MAHIR LANDINGPAGE</h3>
+              <a href="https://drive.google.com/drive/folders/19FOqFoGzCY0ioB4YPLbM_zfOT9yd8PpD" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-wordpress"></i></div><h3 class="katalog-title">30 WP THEME PREMIUM 1</h3>
+              <a href="https://drive.google.com/open?id=13QQdAJgoIkal4DR_EBgbl05SZAOzYQEO" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-wordpress"></i></div><h3 class="katalog-title">30 WP THEME PREMIUM 2</h3>
+              <a href="https://drive.google.com/open?id=19ok8UGPmNPvPwWa0BsHEBxe_ReD3_blr" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+            <div class="katalog-card" data-cat="template">
+              <div class="katalog-icon"><i class="fa-brands fa-wordpress"></i></div><h3 class="katalog-title">30 WP THEME PREMIUM 3</h3>
+              <a href="https://drive.google.com/open?id=1ab7jt7LB46Hxd6mz_3XIFCRdrH--Hhns" target="_blank" class="katalog-btn">LIHAT PRODUK</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teks Atribusi Sumber di Akhir Produk -->
+        <div class="attribution-footer" style="text-align: center; padding: 15px 10px 5px 10px; margin-top: 10px;">
+          <p style="font-size: 11px; color: #94a3b8; font-weight: 500; letter-spacing: 0.3px; margin-bottom: 2px;">Sumber: Mizyan Digital</p>
+          <p style="font-size: 11px; color: #38bdf8; font-weight: 700; letter-spacing: 0.5px;">Dimodifikasi oleh Why Dev Digital</p>
+        </div>
+
+      </div>
+
+      <!-- REVISI POIN 1 & 4: Sidebar Navigation dengan Logo Web Baru & Layout Ringkas Rapat -->
+      <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+      <div id="sidebarMenu" class="sidebar-menu">
+        <div class="sidebar-header">
+          <div class="sidebar-brand">
+            <img src="https://lh3.googleusercontent.com/d/1wkygjdWos3yS1CNeplDtRhB82oOOWqoh" style="width: 24px; height: 24px; border-radius: 6px; object-fit: contain;" alt="Icon">
+            Why Dev Digital
+          </div>
+          <button class="close-sidebar" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-content">
+          <div class="menu-group">
+            <div class="menu-label">Menu Utama</div>
+            <a href="#" class="sidebar-link active" onclick="selectSidebarItem(this); toggleSidebar();"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="javascript:void(0)" onclick="selectSidebarItem(this); openBacaDuluModal(); toggleSidebar();" class="sidebar-link"><i class="fa-solid fa-book-open"></i> Baca Dulu</a>
+            <a href="javascript:void(0)" onclick="selectSidebarItem(this); openTipsModal(); toggleSidebar();" class="sidebar-link"><i class="fa-solid fa-lightbulb"></i> Tips Member</a>
+            <a href="https://sites.google.com/view/kumpulan-produk-mizyan-baru/home" target="_blank" onclick="selectSidebarItem(this);" class="sidebar-link"><i class="fa-solid fa-box-open"></i> Produk</a>
+            <a href="javascript:void(0)" onclick="selectSidebarItem(this); openMateriModal(); toggleSidebar();" class="sidebar-link"><i class="fa-solid fa-graduation-cap"></i> Materi Belajar</a>
+            <a href="https://wa.me/6285853862142?text=Halo%20kak%2C%20saya%20ingin%20bergabung%20komunitas%20Why%20Dev%20Digital." target="_blank" onclick="selectSidebarItem(this);" class="sidebar-link"><i class="fa-solid fa-users"></i> Komunitas</a>
+            <a href="https://sites.google.com/view/mizyandigital-copy/bahan-promosi/hook-viral-siap-pakai" target="_blank" onclick="selectSidebarItem(this);" class="sidebar-link"><i class="fa-solid fa-bullhorn"></i> Bahan Promosi</a>
+          </div>
+          <div class="menu-group">
+            <div class="menu-label">Informasi & Tools</div>
+            <a href="https://sites.google.com/view/opick-digital-081331661370/landing-page" target="_blank" onclick="selectSidebarItem(this);" class="sidebar-link"><i class="fa-solid fa-gift"></i> Bonus</a>
+            <a href="javascript:void(0)" onclick="selectSidebarItem(this); openSnkModal(); toggleSidebar();" class="sidebar-link"><i class="fa-solid fa-file-contract"></i> Syarat & Ketentuan</a>
+            <a href="javascript:void(0)" onclick="openLogoutModal(); toggleSidebar();" class="sidebar-link" style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket" style="color:#ef4444;"></i> Logout (Keluar)</a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODAL 1: POP UP BACA DULU -->
+    <div id="bacaDuluModal" class="premium-overlay">
+      <div class="premium-modal-box">
+        <i class="fa-solid fa-xmark close-btn" onclick="handleCloseBacaDulu()"></i>
+        <h2 class="modal-title">✨ SELAMAT DATANG DI WHY DEV DIGITAL ✨</h2>
+        <p class="modal-greeting">Assalamu’alaikum Warahmatullahi Wabarakatuh 🙏</p>
+        <p class="modal-text">Alhamdulillah, selamat kakak sudah memiliki akses platform <strong>WHY DEV DIGITAL</strong> ini. Semoga menjadi ladang rezeki yang berkah 🤲</p>
+
+        <div class="accent-container green-accent">
+          <h4 class="accent-title">1️⃣ UNTUK PENGGUNAAN PRIBADI</h4>
+          <p>Semua fitur & materi bisa kakak akses sendiri setiap hari untuk menambah ilmu dan memudahkan aktivitas ibadah serta bisnis digital.</p>
+        </div>
+
+        <div class="accent-container purple-accent">
+          <h4 class="accent-title">2️⃣ BISA DIJUAL KEMBALI (HAK RESELLER)</h4>
+          <p>Produk ini <strong>100% BOLEH DIJUAL KEMBALI</strong> kak! Keuntungan penuh milik kakak tanpa ada potongan.</p>
+        </div>
+
+        <div class="highlight-box">
+          <h4>✅ KEUNTUNGAN PENUH MILIK KAKAK!</h4>
+          <p>Semua uang hasil penjualan 100% masuk ke rekening kakak sendiri.</p>
+        </div>
+
+        <button id="btnBacaDulu" class="btn-tutup" onclick="handleCloseBacaDulu()">Lanjutkan ke Syarat & Ketentuan 🚀</button>
+      </div>
+    </div>
+
+    <!-- MODAL 2: TIPS MEMBER -->
+    <div id="tipsModal" class="premium-overlay">
+      <div class="premium-modal-box">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeTipsModal()"></i>
+        <h2 class="modal-title" style="color:#38bdf8;">🚀 TIPS AKSES CEPAT</h2>
+        <div class="accent-container green-accent">
+          <h4 class="accent-title">Tambah ke Layar Utama HP</h4>
+          <p>Buka menu titik tiga di Chrome HP kamu, lalu pilih <strong>"Tambahkan ke Layar Utama"</strong> agar website bisa dibuka langsung seperti aplikasi HP!</p>
+        </div>
+        <button class="btn-tutup" onclick="closeTipsModal()">Sip, Mengerti!</button>
+      </div>
+    </div>
+
+    <!-- MODAL 3: SYARAT & KETENTUAN -->
+    <div id="snkModal" class="premium-overlay">
+      <div class="premium-modal-box">
+        <i class="fa-solid fa-xmark close-btn" onclick="handleCloseSnk()"></i>
+        <h2 class="modal-title" style="color:#f87171;">📜 SYARAT & KETENTUAN</h2>
+        <div class="accent-container green-accent">
+          <h4 class="accent-title" style="color:#a3e635;">✅ YANG DIPERBOLEHKAN</h4>
+          <p>Menjual kembali produk digital satuan di dalam katalog dengan keuntungan 100% milik kakak.</p>
+        </div>
+        <div class="accent-container" style="background: rgba(239, 68, 68, 0.08); border-left: 4px solid #ef4444;">
+          <h4 class="accent-title" style="color:#ef4444;">❌ YANG DILARANG</h4>
+          <p>Dilarang membagikan produk secara gratis (giveaway) tanpa syarat berbayar demi menjaga stabilitas harga.</p>
+        </div>
+        <button id="btnSnk" class="btn-tutup" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" onclick="handleCloseSnk()">Saya Setuju & Lanjutkan! 🚀</button>
+      </div>
+    </div>
+
+    <!-- MODAL 4: BANTUAN & FAQ -->
+    <div id="bantuanModal" class="premium-overlay">
+      <div class="premium-modal-box">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeBantuanModal()"></i>
+        <h2 class="modal-title" style="color:#38bdf8;">🎧 PUSAT BANTUAN WHY DEV DIGITAL</h2>
+        <div class="faq-accordion-container" style="margin-top:15px;">
+          <div class="faq-item">
+            <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">🤔 Bagaimana cara mengakses produk? <i class="fa-solid fa-chevron-down"></i></div>
+            <div class="faq-answer"><div class="faq-answer-content">Cukup klik tombol "LIHAT PRODUK" pada katalog, file akan otomatis terbuka di Drive/Canva.</div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="this.parentElement.classList.toggle('active')">💬 Butuh bantuan CS Why Dev Digital? <i class="fa-solid fa-chevron-down"></i></div>
+            <div class="faq-answer"><div class="faq-answer-content">Silakan hubungi WhatsApp Support Admin melalui tombol konsultasi di menu utama.</div></div>
+          </div>
+        </div>
+        <button class="btn-tutup" onclick="closeBantuanModal()">Tutup</button>
+      </div>
+    </div>
+
+    <!-- ... existing code ... -->
+    <!-- MODAL 5: MATERI BELAJAR -->
+    <div id="materiModal" class="premium-overlay">
+      <div class="premium-modal-box">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeMateriModal()"></i>
+        <h2 class="modal-title" style="color:#a855f7; font-size: 16px; margin-bottom: 4px;">🎓 MATERI BELAJAR WHY DEV DIGITAL</h2>
+        <p class="modal-greeting" style="margin-bottom: 14px;">30 Modul e-learning step-by-step lengkap langsung dari dashboard:</p>
+
+        <!-- Player Video 16:9 HD Ringkas -->
+        <div style="position: relative; padding-bottom: 52%; height: 0; overflow: hidden; border-radius: 14px; background: #000; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);">
+          <iframe id="materiIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <h4 id="materiActiveTitle" style="color: #38bdf8; font-size: 13px; font-weight: 800; margin-bottom: 10px;">Pilih materi pembelajaran:</h4>
+
+        <div class="materi-list-container">
+          <button class="materi-step-btn active" onclick="playMateri('https://www.youtube.com/embed/vwEm1MxHHGo?si=OwgNhCs8izQ1oXMI', 'Step 1: Buat Toko Lynk.id', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 1</span>
+              <strong>Tutorial Buat Toko</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/k4IxsOrrZAQ?si=C-U--8qSB0l7yQFw', 'Step 2: Setting Tampilan Toko', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 2</span>
+              <strong>Setting Tampilan Toko</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/gM6Vhkvul_I?si=DKpJN-jmYr7kYq-W', 'Step 3: Cara Buat Banner/spanduk', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 3</span>
+              <strong>Cara Buat Banner/spanduk</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://drive.google.com/file/d/1G3lYRK7p-1dgQM-NfDjFbC6Z0kUKh_x_/preview', 'Step 4: Baca Dulu (Menentukan Target Audiens)', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 4</span>
+              <strong>Baca Dulu (Menentukan Target Audiens)</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/5o9bzoet3sM?si=NuGAUGUy0sp-g5Q-', 'Step 5: Cara Masukin Produk', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 5</span>
+              <strong>Cara Masukin Produk</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/5ow9QROW5dI?si=T_o1dOnslP2_czoV', 'Step 6: Tutorial Jual Satuan', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 6</span>
+              <strong>Jual Satuan</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/ZBRcHilnxfk?si=znQNyCKjzIBqlfsf', 'Step 7: Part 1 Jual Bundling', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 7</span>
+              <strong>Part 1 Jual Bundling</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/_FWa1vybCu8?si=YFtFs3gb06f4AFRl', 'Step 8: Part 2 Jual Bundling', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 8</span>
+              <strong>Part 2 Jual Bundling</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/qiDRXMQv980?si=XqBpOP3fasFCnSxb', 'Step 9: Part 2 Jual Bundling', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 9</span>
+              <strong>Penjelasan Jual Akses Website</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/d0mmvE3VJzY?si=iL-X6jIr9ECUuk4n', 'Step 10: Tips Cepet Pecah Telor', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 10</span>
+              <strong>Tips Cepet Pecah Telor</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/mAET6H8RN-Y?si=KUXUZwGUdcACqLck', 'Step 11: Part 1 Cara Nentuin Harga', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 11</span>
+              <strong>Part 1 Cara Menentukan Harga</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/9rjK8CnGW2w?si=K86PXPDyMDlelUu-', 'Step 12: Part 2 Cara Nentuin Harga', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 12</span>
+              <strong>Part 2 Cara Menentukan Harga</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/mNp0N1REvQY?si=PZN4uDS-HanZbOny', 'Step 13: Cara Mulai Promosi di Sosmed', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 13</span>
+              <strong>Cara Mulai Promosi di Sosmed</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://drive.google.com/file/d/15LHmqxhShEK_6LhTiGxK2DoVNhBs55Rc/preview', 'Step 14: Promosi Metode Softselling', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 14</span>
+              <strong>Promosi Metode Softselling</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/0TU2Va86QRo?si=kCwqW5CLajG1lpU_', 'Step 15: Referensi akun orang untuk ATM (Amati Tiru Modifikasi)', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 15</span>
+              <strong>Referensi akun orang untuk ATM (Amati Tiru Modifikasi)</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/lri9IYK-9Bo?si=7QJhU5dAaYv0-nNs', 'Step 16: Cara Buat Konten yang menarik', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 16</span>
+              <strong>Cara Buat Konten yang menarik</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/kudZV5lMaJg?si=wBJgSWIbVQZQ1_2l', 'Step 17: Part 1 Cara Promosi di Tiktok', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 17</span>
+              <strong>Part 1 Cara Promosi di Tiktok</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/3mC1CONnxVM?si=xxBsskLI3wuON5yY', 'Step 18: Part 2 (Tiktok)Cara Upload Tiap Hari', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 18</span>
+              <strong>Part 2 (Tiktok)Cara Upload Tiap Hari</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/i5t-if9-tck?si=gYeXUEVc52Qg5qhJ', 'Step 19: Part 1 Solusi Kamera Burik RAM kecil', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 19</span>
+              <strong>Part 1 Solusi Kamera Burik RAM kecil</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/jw1Kl7Uc1Uo?si=7sRclkRJJmvb8CWM', 'Step 20: Part 2 Solusi Kamera Burik RAM kecil', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 20</span>
+              <strong>Part 2 Solusi Kamera Burik RAM kecil</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/liZxqthZkjc?si=6njm64nemP0DgQKt', 'Step 21: Part 1 Tutorial LIVE Tiktok', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 21</span>
+              <strong>Part 1 Tutorial LIVE Tiktok</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/VOJ8vkoCV5I?si=wwVpP9_1CkCxqDCm', 'Step 22: Part 2 Tutorial LIVE Tiktok', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 22</span>
+              <strong>Part 2 Tutorial LIVE Tiktok</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/RgWKYYcLb6w?si=9YSl7q4zpY8CtBHY', 'Step 23: Part 3 Tutorial LIVE Tiktok', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>Step 23</span>
+              <strong>Part 3 Tutorial LIVE Tiktok</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/MJDEGqsU4fA?si=UYV3swyQI4NvQnUY', 'BONUS 1: Part 1 Tutorial Buat Landingpage', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>BONUS 1</span>
+              <strong>Part 1 Tutorial Buat Landingpage</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/BdysZJCaqcc?si=sCJtI-4CuiiGBesB', 'BONUS 2: Part 2 Tutorial Buat Landingpage', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>BONUS 2</span>
+              <strong>Part 2 Tutorial Buat Landingpage</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/BdysZJCaqcc?si=FvSEBsEiakiO3dZT', 'BONUS 3: Part 3 Tutorial Merubah LP menjadi APK', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>BONUS 3</span>
+              <strong>Part 3 Tutorial Merubah LP menjadi APK</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/ulGMib4xh1I?si=QbiSArOpI6V4tkZC', 'BONUS 4: Tutorial Membuat Story Book', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>BONUS 4</span>
+              <strong>Tutorial Membuat Story Book</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/naOVLXRaiZY?si=7l7TebzbNsmQZccb', 'BONUS 5: Tutorial Membuat Worksheet', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>BONUS 5</span>
+              <strong>Tutorial Membuat Worksheet</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/HoInEzkDlDU?si=05VSFVN8NZapn6yS', 'BONUS 6: Tutorial Buat Undangan Digital', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>BONUS 6</span>
+              <strong>Tutorial Buat Undangan Digital</strong>
+            </div>
+          </button>
+          <button class="materi-step-btn" onclick="playMateri('https://www.youtube.com/embed/W5PSOS43__w?si=ZVfjszdTUctuiViX', 'BONUS 7: Tutorial Buat Quiz', this)">
+            <div class="materi-step-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="materi-step-text">
+              <span>BONUS 7</span>
+              <strong>Tutorial Buat Quiz</strong>
+            </div>
+          </button>
+        </div>
+        <button class="btn-tutup" style="background: linear-gradient(135deg, #475569, #1e293b);" onclick="closeMateriModal()">Tutup Materi Belajar</button>
+      </div>
+    </div>
+<!-- ... existing code ... -->
+
+    <!-- REVISI POIN 3: CUSTOM MODAL LOGOUT DENGAN ANIMASI DEDIKASI PADA TOMBOL -->
+    <div id="logoutModal" class="premium-overlay">
+      <div class="premium-modal-box" style="max-width: 380px; text-align: center; border-color: rgba(239, 68, 68, 0.4);">
+        <i class="fa-solid fa-xmark close-btn" onclick="closeLogoutModal()"></i>
+        <div style="width: 58px; height: 58px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); color: #ef4444; font-size: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; border: 1px solid rgba(239, 68, 68, 0.3);">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </div>
+        <h2 class="modal-title" style="color: #ef4444; font-size: 17px; margin-bottom: 6px;">Konfirmasi Logout</h2>
+        <p class="modal-text" style="color: #cbd5e1; font-size: 12px; margin-bottom: 20px;">Apakah Anda yakin ingin keluar dari Member Dashboard?</p>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="closeLogoutModal()" class="btn-logout-cancel">Batal</button>
+          <button onclick="confirmLogout()" class="btn-logout-confirm">Ya, Keluar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const AUTH_KEY = 'whyDevMemberAuth';
+      const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
+
+      // Sidebar Navigation Toggle
+      function toggleSidebar() {
+        const sidebar = document.getElementById('sidebarMenu');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar && overlay) {
+          sidebar.classList.toggle('active');
+          overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+        }
+      }
+
+      // REVISI POIN 1: Function for Active Link Frame Highlight
+      function selectSidebarItem(element) {
+        const links = document.querySelectorAll('.sidebar-link');
+        links.forEach(l => l.classList.remove('active'));
+        if (element) {
+          element.classList.add('active');
+        }
+      }
+
+      // Modal Handlers
+      function openBacaDuluModal() {
+        const modal = document.getElementById('bacaDuluModal');
+        if (modal) modal.classList.add('show');
+      }
+      function handleCloseBacaDulu() {
+        const modal = document.getElementById('bacaDuluModal');
+        if (modal) modal.classList.remove('show');
+      }
+
+      function openTipsModal() {
+        const modal = document.getElementById('tipsModal');
+        if (modal) modal.classList.add('show');
+      }
+      function closeTipsModal() {
+        const modal = document.getElementById('tipsModal');
+        if (modal) modal.classList.remove('show');
+      }
+
+      function openSnkModal() {
+        const modal = document.getElementById('snkModal');
+        if (modal) modal.classList.add('show');
+      }
+      function handleCloseSnk() {
+        const modal = document.getElementById('snkModal');
+        if (modal) modal.classList.remove('show');
+      }
+
+      function openBantuanModal() {
+        const modal = document.getElementById('bantuanModal');
+        if (modal) modal.classList.add('show');
+      }
+      function closeBantuanModal() {
+        const modal = document.getElementById('bantuanModal');
+        if (modal) modal.classList.remove('show');
+      }
+
+      function openMateriModal() {
+        const modal = document.getElementById('materiModal');
+        if (modal) {
+          modal.classList.add('show');
+          const iframe = document.getElementById('materiIframe');
+          if (iframe && !iframe.src) {
+            const firstBtn = document.querySelector('.materi-step-btn');
+            if (firstBtn) {
+              firstBtn.click();
+            } else {
+              iframe.src = 'https://www.youtube.com/embed/vwEm1MxHHGo';
+            }
+          }
+        }
+      }
+      function closeMateriModal() {
+        const modal = document.getElementById('materiModal');
+        if (modal) {
+          modal.classList.remove('show');
+          const iframe = document.getElementById('materiIframe');
+          if (iframe) iframe.src = '';
+        }
+      }
+      function playMateri(url, title, btn) {
+        const iframe = document.getElementById('materiIframe');
+        const titleEl = document.getElementById('materiActiveTitle');
+        if (iframe) iframe.src = url;
+        if (titleEl) titleEl.innerText = title;
+        
+        const allBtns = document.querySelectorAll('.materi-step-btn');
+        allBtns.forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+      }
+
+      // Sembunyikan judul section jika tidak ada produk yang cocok
+      function updateSectionVisibility() {
+        const sections = document.querySelectorAll('.katalog-section');
+        sections.forEach(sec => {
+          const cards = sec.querySelectorAll('.katalog-card');
+          let hasVisible = false;
+          cards.forEach(card => {
+            if (card.style.display !== 'none') {
+              hasVisible = true;
+            }
+          });
+          if (hasVisible) {
+            sec.style.display = '';
+          } else {
+            sec.style.display = 'none';
+          }
+        });
+      }
+
+      function searchKatalog() {
+        const input = document.getElementById('searchKatalogInput');
+        const filter = input ? input.value.toLowerCase().trim() : '';
+        const cards = document.querySelectorAll('.katalog-card');
+        
+        cards.forEach(card => {
+          const titleEl = card.querySelector('.katalog-title');
+          const titleText = titleEl ? titleEl.innerText.toLowerCase() : '';
+          if (titleText.includes(filter)) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        updateSectionVisibility();
+      }
+
+      function filterKatalog(btn, category) {
+        const allBtns = document.querySelectorAll('.cat-filter-btn');
+        allBtns.forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+
+        const cards = document.querySelectorAll('.katalog-card');
+        cards.forEach(card => {
+          const cardCat = card.getAttribute('data-cat');
+          if (category === 'semua' || cardCat === category) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        const searchInput = document.getElementById('searchKatalogInput');
+        if (searchInput) searchInput.value = '';
+
+        updateSectionVisibility();
+      }
+
+      // Status Authentication Check
+      function checkAuthStatus() {
+        const loginLayer = document.getElementById('loginLayer');
+        const dashboardLayer = document.getElementById('dashboardLayer');
+        const storedAuth = localStorage.getItem(AUTH_KEY);
+
+        if (storedAuth) {
+          try {
+            const authData = JSON.parse(storedAuth);
+            const now = Date.now();
+            
+            if (authData && authData.timestamp && (now - authData.timestamp < FIVE_DAYS_MS)) {
+              loginLayer.style.display = 'none';
+              dashboardLayer.style.display = 'block';
+              
+              setTimeout(() => {
+                animateStatCounters();
+              }, 100);
+              return;
+            }
+          } catch (e) {
+            localStorage.removeItem(AUTH_KEY);
+          }
+        }
+
+        loginLayer.style.display = 'flex';
+        dashboardLayer.style.display = 'none';
+      }
+
+      function handleLoginSubmit(e) {
+        e.preventDefault();
+        
+        const usernameInput = document.getElementById('loginUser').value.trim();
+        const passwordInput = document.getElementById('loginPass').value.trim();
+        const errBox = document.getElementById('loginErrorMsg');
+        const btnSubmit = document.getElementById('btnLoginSubmit');
+        const btnText = document.getElementById('loginBtnText');
+        const btnIcon = document.getElementById('loginBtnIcon');
+
+        errBox.style.display = 'none';
+
+        btnSubmit.disabled = true;
+        btnText.innerText = "Memverifikasi Akun...";
+        btnIcon.className = "fa-solid fa-spinner fa-spin";
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(response) {
+              if (response && response.success) {
+                const authObj = {
+                  user: response.user,
+                  name: response.name,
+                  timestamp: Date.now()
+                };
+                localStorage.setItem(AUTH_KEY, JSON.stringify(authObj));
+
+                resetLoginBtn();
+                document.getElementById('loginLayer').style.display = 'none';
+                document.getElementById('dashboardLayer').style.display = 'block';
+                animateStatCounters();
+              } else {
+                resetLoginBtn();
+                errBox.innerText = response ? response.message : "Username atau Password salah!";
+                errBox.style.display = 'block';
+              }
+            })
+            .withFailureHandler(function(err) {
+              resetLoginBtn();
+              errBox.innerText = "Terjadi kesalahan koneksi ke server.";
+              errBox.style.display = 'block';
+            })
+            .authenticateUser(usernameInput, passwordInput);
+        } else {
+          setTimeout(() => {
+            if ((usernameInput.toLowerCase() === 'admin@whydev.com' && passwordInput === '123456') || 
+                (usernameInput.toLowerCase() === 'member' && passwordInput === 'whydev2026')) {
+              const authObj = { user: usernameInput, name: "Member", timestamp: Date.now() };
+              localStorage.setItem(AUTH_KEY, JSON.stringify(authObj));
+              resetLoginBtn();
+              document.getElementById('loginLayer').style.display = 'none';
+              document.getElementById('dashboardLayer').style.display = 'block';
+              animateStatCounters();
+            } else {
+              resetLoginBtn();
+              errBox.style.display = 'block';
+            }
+          }, 800);
+        }
+
+        function resetLoginBtn() {
+          btnSubmit.disabled = false;
+          btnText.innerText = "Masuk Ke Dashboard";
+          btnIcon.className = "fa-solid fa-arrow-right-to-bracket";
+        }
+      }
+
+      // Modal Logout
+      function openLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        if (modal) modal.classList.add('show');
+      }
+
+      function closeLogoutModal() {
+        const modal = document.getElementById('logoutModal');
+        if (modal) modal.classList.remove('show');
+      }
+
+      function confirmLogout() {
+        closeLogoutModal();
+        localStorage.removeItem(AUTH_KEY);
+        checkAuthStatus();
+      }
+
+      // Smooth Background Rotator (3 Gambar)
+      const bgImages = [
+        'https://lh3.googleusercontent.com/d/1R5vHXKuWO_oykmC0WMTodTBk12pA5svT',
+        'https://lh3.googleusercontent.com/d/1Q6kEwoLkun4RvxkxJY-LU8JTfjteLcjJ',
+        'https://lh3.googleusercontent.com/d/1tF2Mri9__NyrKrRNhWpiVlwtI3PIQjcV'
+      ];
+      let currentBgIndex = 0;
+      let activeBgElement = 1;
+
+      function startBackgroundSlideshow() {
+        setInterval(() => {
+          currentBgIndex = (currentBgIndex + 1) % bgImages.length;
+          const nextUrl = bgImages[currentBgIndex];
+          const bg1 = document.getElementById('bgImage1');
+          const bg2 = document.getElementById('bgImage2');
+
+          if (activeBgElement === 1) {
+            bg2.src = nextUrl;
+            bg2.classList.add('active');
+            bg1.classList.remove('active');
+            activeBgElement = 2;
+          } else {
+            bg1.src = nextUrl;
+            bg1.classList.add('active');
+            bg2.classList.remove('active');
+            activeBgElement = 1;
+          }
+        }, 3000);
+      }
+
+      // Stat Counters Animation
+      function animateStatCounters() {
+        const statElements = document.querySelectorAll('.stat-value');
+        statElements.forEach(el => {
+          const isFloat = el.getAttribute('data-type') === 'float';
+          const targetValue = parseFloat(el.getAttribute('data-target'));
+          const suffix = el.getAttribute('data-suffix') || '';
+          const duration = 1600;
+          const startTime = performance.now();
+
+          function updateNumber(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+            if (isFloat) {
+              const currentValue = (easeProgress * targetValue).toFixed(1);
+              el.innerText = currentValue + suffix;
+            } else {
+              const currentValue = Math.floor(easeProgress * targetValue);
+              el.innerText = currentValue.toLocaleString('id-ID') + suffix;
+            }
+
+            if (progress < 1) {
+              requestAnimationFrame(updateNumber);
+            }
+          }
+
+          requestAnimationFrame(updateNumber);
+        });
+      }
+
+      // Initializations
+      document.addEventListener("DOMContentLoaded", function() {
+        startBackgroundSlideshow();
+        checkAuthStatus();
+
+        const slider = document.getElementById('sliderWrapper');
+        if (slider) {
+          let slideIndex = 0;
+          const slides = slider.querySelectorAll('.slide');
+          setInterval(() => {
+            slideIndex = (slideIndex + 1) % slides.length;
+            slider.style.transform = `translateX(-${slideIndex * 100}%)`;
+          }, 4500);
+        }
+      });
+    </script>
+  </body>
+</html>
